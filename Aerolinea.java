@@ -4,7 +4,7 @@ public class Aerolinea{
 	private Vuelo vuelos[] = new Vuelo[10];
 	private int indVuelo;
 
-	//Constructores
+	//Constructoresnnnnnnn
 	public Aerolinea(){}
 	public Aerolinea(String nombre){
 		this.nombre = nombre;
@@ -55,3 +55,4 @@ public class Aerolinea{
 		return vuelosDisp;
 	}
 }
+
