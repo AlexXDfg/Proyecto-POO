@@ -1,4 +1,4 @@
-public class Vuelo {
+public class Vuelo implements Verificable{
 // Atributos
 	private long noVuelo;
 	private String origen;
@@ -78,4 +78,15 @@ public class Vuelo {
         }
         return null; // No se encontró el asiento
     }
+
+	//Metodos de la interface 'Verificable'
+	@Override
+    public boolean estaDisponible() {
+		return this.estado == 1; // Devuelve true si estado es 1
+    }
+    @Override
+    public String getEstadoDetallado() {
+        return (this.estado == 1) ? "Disponible" : "No Disponible";
+    }
 }
+
