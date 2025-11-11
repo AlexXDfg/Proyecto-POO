@@ -8,7 +8,6 @@ public class Vuelo {
 	private String duracion;
 	private int estado; // 0(no disponible) o 1(disponible)
 	private Asiento asientos[] = new Asiento[20];
-	private int indiceAsiento = 0;
 
 	//Constructor	
 	public Vuelo(long noVuelo, String origen, String destino, String horaSalida, String horaLlegada, String duracion){
@@ -28,7 +27,7 @@ public class Vuelo {
         return "Vuelo #" + noVuelo +
                " || " + origen + " -> " + destino +
                " || Salida: " + horaSalida +
-               " || Estado: " + (estado == 1) ? "Disponible" : "No Disponible";
+               " || Estado: " + ((estado == 1) ? "Disponible" : "No Disponible");
     }
 
 	//Getters
@@ -57,6 +56,12 @@ public class Vuelo {
 		return asientos;
 	}
 
+	//Setter
+	public void setEstado(int estado){
+		this.estado = estado;
+	}
+
+	//Crea los asientos
 	private void crearAsientos(){
 		for(int i = 0; i < asientos.length; i++){
 			if(i < 5)
@@ -65,4 +70,12 @@ public class Vuelo {
 				asientos[i] = new Asiento(i + 1, "Economica", this);
 		}
 	}
+
+	//Busca un asiento por el No. de asiento y retorna el Asiento
+	public Asiento buscarAsiento(long noAsiento) {
+        if (noAsiento > 0 && noAsiento <= asientos.length) {
+            return asientos[(int) noAsiento - 1];
+        }
+        return null; // No se encontró el asiento
+    }
 }
