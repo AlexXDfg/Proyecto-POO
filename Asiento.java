@@ -2,6 +2,7 @@ public class Asiento{
 	// Atributos
 	private long noAsiento;
 	private int disponibilidad; // 0(no disponible) o 1(disponible)
+	private String tipo;
 	private Vuelo vueloAsignado;
 	private Boleto boletoAsignado;
 
@@ -20,7 +21,7 @@ public class Asiento{
 		return "Asiento #" + noAsiento +
 			   " || Vuelo #" + vueloAsignado.getNoVuelo() +
 			   " || Tipo: " + tipo +
-			   " || Estado: " + (disponibilidad == 1) ? "Disponible" : "Ocupado";
+			   " || Estado: " + ((disponibilidad == 1) ? "Disponible" : "Ocupado");
 	}
 
 	//Getters
@@ -40,9 +41,10 @@ public class Asiento{
 		return boletoAsignado;
 	}
 	
-	//Asigna un boleto al asiento
+	//Asigna un boleto al asiento y lo actualiza como no disponible
 	public void asignarBoleto(Boleto boleto) {
 		boletoAsignado = boleto;
 		disponibilidad = 0; // 0 = no disponible
 	}
+
 }
