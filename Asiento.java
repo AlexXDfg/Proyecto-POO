@@ -1,4 +1,4 @@
-public class Asiento{
+public class Asiento implements Verificable{
 	// Atributos
 	private long noAsiento;
 	private int disponibilidad; // 0(no disponible) o 1(disponible)
@@ -47,4 +47,14 @@ public class Asiento{
 		disponibilidad = 0; // 0 = no disponible
 	}
 
+	//Metodos de la interface 'Verificable'
+    @Override
+    public boolean estaDisponible(){
+        return this.disponibilidad == 1; // Devuelve true si disponibilidad es 1
+    }
+    @Override
+    public String getEstadoDetallado(){
+		return (this.disponibilidad == 1) ? "Disponible" : "Ocupado";
+    }
 }
+
