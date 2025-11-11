@@ -18,7 +18,7 @@ public class Pasajero {
     public String toString(){
         return "Pasajero: " + nombre +
                " || ID: " + idPasajero +
-               " || Documento: " + documento
+               " || Documento: " + documento +
 			   " || Telefono: " + telefono;
     }
 
@@ -36,3 +36,4 @@ public class Pasajero {
         return telefono;
     }
 }
+
