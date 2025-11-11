@@ -4,7 +4,7 @@ public class Aeropuerto{
 	private String direccion;
 	
 	//Aerolineas
-	private Aerolinea aerolineas[] = new Aerolineas[3];
+	private Aerolinea aerolineas[] = new Aerolinea[3];
 	private int indAerolineas;
 	
 	//Vuelos
@@ -101,3 +101,4 @@ public class Aeropuerto{
         return null;	//No se encontro el empleado
     }
 }
+
