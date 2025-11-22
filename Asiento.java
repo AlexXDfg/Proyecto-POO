@@ -1,4 +1,5 @@
-public class Asiento implements Verificable{
+import java.io.Serializable;
+public class Asiento implements Verificable, Serializable{
 	// Atributos
 	private long noAsiento;
 	private int disponibilidad; // 0(no disponible) o 1(disponible)
@@ -57,4 +58,5 @@ public class Asiento implements Verificable{
 		return (this.disponibilidad == 1) ? "Disponible" : "Ocupado";
     }
 }
+
 
