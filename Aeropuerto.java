@@ -1,4 +1,4 @@
-public class Aeropuerto{
+public class Aeropuerto implements Serializable{
 	//Atributos
 	private String nombre;
 	private String direccion;
@@ -124,5 +124,6 @@ public class Aeropuerto{
 		return nuevoBoleto;
 	}
 }
+
 
 
