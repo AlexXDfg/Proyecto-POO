@@ -1,4 +1,4 @@
-public class Vuelo implements Verificable{
+public class Vuelo implements Verificable, Serializable{
 // Atributos
 	private long noVuelo;
 	private String origen;
@@ -89,4 +89,5 @@ public class Vuelo implements Verificable{
         return (this.estado == 1) ? "Disponible" : "No Disponible";
     }
 }
+
 
