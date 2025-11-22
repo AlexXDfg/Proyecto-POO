@@ -1,4 +1,5 @@
-public class Pasajero {
+import java.io.Serializable;
+public class Pasajero implements Serializable{
     // Atributos
     private String nombre;
     private long idPasajero;
@@ -36,4 +37,5 @@ public class Pasajero {
         return telefono;
     }
 }
+
 
