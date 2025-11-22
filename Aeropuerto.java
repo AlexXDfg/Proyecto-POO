@@ -1,3 +1,4 @@
+import java.io.Serializable;
 public class Aeropuerto implements Serializable{
 	//Atributos
 	private String nombre;
@@ -124,6 +125,7 @@ public class Aeropuerto implements Serializable{
 		return nuevoBoleto;
 	}
 }
+
 
 
 
