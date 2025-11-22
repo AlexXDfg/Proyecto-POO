@@ -1,9 +1,9 @@
 public class Mensaje extends Thread {
     private boolean ejecutandose;
-    private Sucursal sucursal;
+    private Aeropuerto aeropuerto;
 
     public Mensaje(Aeropuerto aeropuerto) {
-        this.sucursal = sucursal;
+        this.aeropuerto = aeropuerto;
         ejecutandose = true;
     }
 
@@ -14,7 +14,7 @@ public class Mensaje extends Thread {
                 Thread.sleep(5000);
                 System.out.println(" Contamos con " + aeropuerto.getIndAerolineas() + " aerolineas asociadas.");
                 Thread.sleep(5000);
-                System.out.println(" Y manejamos hasta " + aeropuerto.getIndVuelo() + " vuelos.");
+                System.out.println(" Y manejamos hasta " + aeropuerto.getIndVuelos() + " vuelos.");
                 Thread.sleep(5000);
                 System.out.println(" Actualmente contamos con " + aeropuerto.getIndEmpleados() + " empleados trabajando en nuestro aeropuerto.");
                 Thread.sleep(5000);
