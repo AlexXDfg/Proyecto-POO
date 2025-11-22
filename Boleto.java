@@ -1,4 +1,5 @@
-public class Boleto{
+import java.io.Serializable;
+public class Boleto implements Serializable{
     // Atributos
     private float precio;
     private long noBoleto;
@@ -36,3 +37,4 @@ public class Boleto{
         return clase;
     }
 }
+
