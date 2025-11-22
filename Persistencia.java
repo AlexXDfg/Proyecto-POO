@@ -11,7 +11,7 @@ public class Persistencia{
     public static Sucursal cargaArchivoPesistencia(){
         FileInputStream fisPer = null;
         try {
-            fisPer = new FileInputStream("Banco.ser");
+            fisPer = new FileInputStream("SistemaAeropuerto.ser");
             
             ObjectInputStream oisPer = new ObjectInputStream(fisPer);
             
@@ -34,7 +34,7 @@ public class Persistencia{
     }
 
     //guarda todos los objetos por modificaciones
-    public static void guardaPersistencia(Sucursal objeto) {
+    public static void guardaPersistencia(Aeropuerto objeto) {
         
         FileOutputStream archivo;
         File f = new File("Banco.ser");
