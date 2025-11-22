@@ -37,7 +37,7 @@ public class Persistencia{
     public static void guardaPersistencia(Aeropuerto objeto) {
         
         FileOutputStream archivo;
-        File f = new File("Banco.ser");
+        File f = new File("SistemaAeropuerto.ser");
         
         try {
             //segundo parametro true agrega, false sobreescribe
@@ -57,3 +57,4 @@ public class Persistencia{
         }
     }
 }
+
