@@ -1,4 +1,4 @@
-public abstract class Empleado{
+public abstract class Empleado implements Serializable{
 	//Atributos
 	protected long idEmpleado;
 	protected String nombre;
@@ -39,4 +39,5 @@ public abstract class Empleado{
 	
 	//Metodo abstracto (para heredar) que calcula el sueldo neto de cada empleado
 	public abstract void SueldoNeto();
+
 }
