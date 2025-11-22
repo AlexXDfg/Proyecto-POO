@@ -12,6 +12,17 @@ public class Principal {
 
     public void menu() {
         int opcion;
+
+        Aeropuerto persistencia = Persistencia.cargaArchivoPesistencia();
+
+        if (persistencia != null) {
+            aeropuerto = persistencia;
+        }
+
+        Mensaje mensaje = new Mensaje(aeropuerto);
+        Thread mensajero = new Thread(mensaje);
+        mensajero.start(); 
+        
         do{
             String menu = "Seleccione una opción:\n"
                         + "[1] Ver Aeropuerto\n"
@@ -146,3 +157,4 @@ public class Principal {
         }
     }
 }
+
