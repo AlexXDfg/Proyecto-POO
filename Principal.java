@@ -1,160 +1,251 @@
-import javax.swing.JOptionPane; // Para imprimir o pedir datos mediante ventanas.
+import javax.swing.JOptionPane;
 
 public class Principal {
-    
-    public Aeropuerto aeropuerto;
 
     public static void main(String[] args) {
         Principal p = new Principal();
-        p.datosInicializados();
-        p.menu();
+        Aeropuerto aeropuerto = p.datosInicializados();
+        p.menu(aeropuerto);
     }
 
-    public void menu() {
-        int opcion;
-
+    public void menu(Aeropuerto aeropuerto) {
+        
+        // Cargar persistencia si existe.
         Aeropuerto persistencia = Persistencia.cargaArchivoPesistencia();
-
         if (persistencia != null) {
             aeropuerto = persistencia;
         }
-
+        
+        // Hilo de mensajes
         Mensaje mensaje = new Mensaje(aeropuerto);
         Thread mensajero = new Thread(mensaje);
         mensajero.start(); 
-        
-        do{
-            String menu = "Seleccione una opción:\n"
-                        + "[1] Ver Aeropuerto\n"
-                        + "[2] Obtener estado detallado\n"
-                        + "[3] Salir";
-            String entrada = JOptionPane.showInputDialog(menu);
-            
-            // Manejo básico por si el usuario presiona "Cancelar"
-            if (entrada == null) {
-                opcion = 3;
-            } else {
-                try {
-                    opcion = Integer.parseInt(entrada);
-                } catch (NumberFormatException e) {
-                    opcion = -1; // Opción inválida para forzar el default
-                }
-            }
 
+        int opcion;
+
+        do {
+            String entrada = JOptionPane.showInputDialog(
+                "--- AEROPUERTO: " + aeropuerto.getNombre() + " ---\n" +
+                "1. Ver Información del Aeropuerto\n" +
+                "2. Ver Vuelos Disponibles\n" +
+                "3. Ver Nómina de Empleados\n" +
+                "4. Vender Boleto\n" +
+                "5. Verificar Estado (Vuelo/Asiento)\n" +
+                "6. Guardar y Salir\n" +
+                "--------------------------------\n" +
+                "Seleccione una opción:"
+            );
+            
             switch(opcion) {
-                case 1:
-                    // Ahora 'aeropuerto' está inicializado y se puede usar
+                case 1: // Ver Aeropuerto
                     JOptionPane.showMessageDialog(null, aeropuerto.toString());
                     break;
-                case 2:
-                    // Aquí iría la lógica para obtener el estado detallado
-                    // Esta opción aún no está implementada en tu 'menu' original
-                    JOptionPane.showMessageDialog(null, "Funcionalidad 'Estado Detallado' no implementada.");
+
+                case 2: // Ver Vuelos
+                    if (verificarVuelos(aeropuerto) == 0) 
+                        break;
+                    mostrarVuelos(aeropuerto);
                     break;
-                case 3:
-                    JOptionPane.showMessageDialog(null, "Saliendo del programa.");
+
+                case 3: // Ver Nómina
+                    mostrarNomina(aeropuerto);
                     break;
+
+                case 4: // Vender Boleto
+                    // Verificaciones previas
+                    if (verificarVuelos(aeropuerto) == 0) 
+                        break;
+                    
+                    // 1. Mostrar y Seleccionar Vuelo
+                    mostrarVuelos(aeropuerto);
+                    Vuelo vueloSel = seleccionarVuelo(aeropuerto);
+                    if (vueloSel == null) 
+                        break; // Si no encontró vuelo, salir del case
+
+                    // 2. Mostrar y Seleccionar Asiento
+                    mostrarAsientos(vueloSel);
+                    Asiento asientoSel = seleccionarAsiento(vueloSel);
+                    if (asientoSel == null) 
+                        break;
+
+                    // 3. Crear el Pasajero (Método similar a crearCliente)
+                    // "El objeto que envien lo creen en el mismo metodo antes de enviarlo"
+                    Pasajero pasajero = crearPasajero();
+
+                    // 4. Datos adicionales para la venta
+                    long idAgente = Long.parseLong(JOptionPane.showInputDialog("ID del Agente (Ej. 1000):"));
+                    float precio = Float.parseFloat(JOptionPane.showInputDialog("Precio del boleto:"));
+                    long noBoleto = System.currentTimeMillis(); // ID único simple
+
+                    // 5. Enviar objetos al método del aeropuerto
+                    Boleto boletoGenerado = aeropuerto.gestionarVentaBoleto(
+                        idAgente, 
+                        vueloSel.getNoVuelo(), 
+                        asientoSel.getNoAsiento(), 
+                        pasajero, 
+                        noBoleto, 
+                        precio
+                    );
+
+                    if (boletoGenerado != null) {
+                        JOptionPane.showMessageDialog(null, "¡Venta Exitosa!\n" + boletoGenerado.toString());
+                    } 
+                    
+                    else {
+                        JOptionPane.showMessageDialog(null, "Error: Verifique ID Agente o disponibilidad.");
+                    }
+                    break;
+
+                case 5: // Verificar Estado (Interface)
+                    String tipo = JOptionPane.showInputDialog("Escriba 'vuelo' o 'asiento':");
+                    
+                    if (tipo != null && tipo.equalsIgnoreCase("vuelo")) {
+                        Vuelo v = seleccionarVuelo(aeropuerto);
+                        if (v != null) 
+                            JOptionPane.showMessageDialog(null, "Estado: " + v.getEstadoDetallado());
+                            
+                    } else if (tipo != null && tipo.equalsIgnoreCase("asiento")) {
+                        long idVuelo = Long.parseLong(JOptionPane.showInputDialog("ID del Vuelo del asiento:"));
+                        Vuelo v = aeropuerto.buscarVuelo(idVuelo);
+                        if (v != null) {
+                            Asiento a = seleccionarAsiento(v);
+                            if (a != null)
+                                JOptionPane.showMessageDialog(null, "Estado: " + a.getEstadoDetallado());
+                        } 
+                        
+                        else {
+                            JOptionPane.showMessageDialog(null, "Vuelo no encontrado.");
+                        }
+                    }
+                    break;
+
+                case 6: // Guardar y Salir
+                    mensaje.detener();
+                    Persistencia.guardaPersistencia(aeropuerto);
+                    JOptionPane.showMessageDialog(null, "Guardando y saliendo...");
+                    break;
+
                 default:
-                    JOptionPane.showMessageDialog(null, "Opción no válida. Intente de nuevo.");
+                    JOptionPane.showMessageDialog(null, "Opción no válida.");
             }
-        }while(opcion != 3);
+
+        } while(opcion != 6);
     }
 
-    public void datosInicializados() {
-        // 1. Crear la instancia principal del Aeropuerto
-        aeropuerto = new Aeropuerto("Aeropuerto Internacional Benito Juárez", "Ciudad de México, México");
+    public Pasajero crearPasajero() {
+        String nombre = JOptionPane.showInputDialog("Nombre del Pasajero:");
+        long id = Long.parseLong(JOptionPane.showInputDialog("ID del Pasajero:"));
+        String doc = JOptionPane.showInputDialog("Documento:");
+        String tel = JOptionPane.showInputDialog("Teléfono:");
 
-        // 2. Añadir las 3 Aerolíneas
-        aeropuerto.addAerolinea("AeroMexico"); // Índice 0
-        aeropuerto.addAerolinea("Volaris");     // Índice 1
-        aeropuerto.addAerolinea("Viva Aerobus"); // Índice 2
+        Pasajero nuevo = new Pasajero(nombre, id, doc, tel);
+        return nuevo;
+    }
 
-        // 3. Añadir 30 Agentes de Mostrador (Empleados)
-        // Usamos un ID base 1000 para Agentes
-        for (int i = 0; i < 30; i++) {
-            AgenteMostrador agente = new AgenteMostrador(
-                1000L + i,                  // idEmpleado
-                "Agente " + (i + 1),        // nombre
-                (i % 5) + 1,                // antiguedad (1-5 años)
-                35000.0f                    // sueldo base
-            );
-            aeropuerto.addEmpleado(agente); //
+    public Vuelo seleccionarVuelo(Aeropuerto aeropuerto) {
+        long noVuelo = Long.parseLong(JOptionPane.showInputDialog("Ingrese el Número (#) de Vuelo:"));
+        Vuelo v = aeropuerto.buscarVuelo(noVuelo);
+        if (v == null) {
+            JOptionPane.showMessageDialog(null, "Vuelo no encontrado.");
         }
+        return v;
+    }
 
-        // Datos de ejemplo para vuelos
-        String[] origenes = {"CDMX", "MTY", "CUN", "GDL", "TIJ"};
-        String[] destinos = {"LAX", "JFK", "MIA", "BOG", "SCL", "EZE"};
+    public Asiento seleccionarAsiento(Vuelo vuelo) {
+        long noAsiento = Long.parseLong(JOptionPane.showInputDialog("Ingrese el Número de Asiento:"));
+        Asiento a = vuelo.buscarAsiento(noAsiento);
+        
+        if (a == null) {
+            JOptionPane.showMessageDialog(null, "Asiento no existe.");
+            return null;
+        }
+        if (a.getDisponibilidad() == 0) { // 0 significa ocupado
+            JOptionPane.showMessageDialog(null, "El asiento ya está ocupado.");
+            return null;
+        }
+        return a;
+    }
 
-        // 4. Bucle para crear 30 Vuelos, 30 Pilotos y 60 Azafatas
-        for (int i = 0; i < 30; i++) {
-            
-            // --- A. Crear el Vuelo ---
-            long noVuelo = 100L + i;
-            String origen = origenes[i % origenes.length];
-            String destino = destinos[i % destinos.length];
-            // Asegurarnos que origen y destino no sean el mismo
-            if (origen.equals(destino)) {
-                destino = destinos[(i + 1) % destinos.length];
+    public void mostrarVuelos(Aeropuerto aeropuerto) {
+        String lista = "--- VUELOS DISPONIBLES ---\n";
+        
+        for (int i = 0; i < aeropuerto.getIndAerolineas(); i++) {
+            Aerolinea a = aeropuerto.getAerolineas()[i];
+            if(a != null){
+                lista += "\nAerolínea: " + a.getNombre() + "\n";
+                
+                Vuelo[] vuelos = a.getVuelosDisponibles();
+                for (int j = 0; j < vuelos.length; j++) {
+                    lista += "   " + vuelos[j].toString() + "\n";
+                }
             }
-
-            Vuelo vuelo = new Vuelo(
-                noVuelo,                    // noVuelo
-                origen,                     // origen
-                destino,                    // destino
-                String.format("%02d:00", (i % 24)), // horaSalida
-                String.format("%02d:00", (i + 3) % 24), // horaLlegada
-                "3h 0m"                     // duracion
-            ); //
-            
-            // --- B. Crear el personal para ese vuelo (1 Piloto, 2 Azafatas) ---
-            
-            // Usamos ID base 2000 para Pilotos
-            Piloto piloto = new Piloto(
-                5000 + (i * 100),           // horasVuelo
-                1,                          // licencia (1 = en regla)
-                null,                       // vueloAsignado (se asigna después)
-                2000L + i,                  // idEmpleado
-                "Piloto " + (i + 1),        // nombre
-                (i % 10) + 1,               // antiguedad (1-10 años)
-                120000.0f                   // sueldo base
-            ); //
-
-            // Usamos ID base 3000 y 4000 para Azafatas
-            Azafata azafata1 = new Azafata(
-                0,                          // cantProductosVendidos
-                null,                       // vueloAsignado (se asigna después)
-                3000L + i,                  // idEmpleado
-                "Azafata " + (i * 2 + 1),   // nombre
-                (i % 4) + 1,                // antiguedad (1-4 años)
-                45000.0f                    // sueldo base
-            ); //
-
-            Azafata azafata2 = new Azafata(
-                0,
-                null,
-                4000L + i,
-                "Azafata " + (i * 2 + 2),
-                (i % 4) + 1,
-                45000.0f
-            ); //
-
-            // --- C. Asignar el vuelo al personal ---
-            piloto.setVueloAsignado(vuelo);     //
-            azafata1.setVueloAsignado(vuelo);   //
-            azafata2.setVueloAsignado(vuelo);
-
-            // --- D. Añadir el Vuelo al Aeropuerto (y a su Aerolínea correspondiente) ---
-            // Los vuelos 0-9 van a la aerolínea 0
-            // Los vuelos 10-19 van a la aerolínea 1
-            // Los vuelos 20-29 van a la aerolínea 2
-            int indiceAerolinea = i / 10;
-            aeropuerto.addVuelo(vuelo, indiceAerolinea); //
-
-            // --- E. Añadir el personal al Aeropuerto ---
-            aeropuerto.addEmpleado(piloto);
-            aeropuerto.addEmpleado(azafata1);
-            aeropuerto.addEmpleado(azafata2);
         }
+        // Impresión simple, sin librerías raras
+        JOptionPane.showMessageDialog(null, lista);
+    }
+
+    public void mostrarAsientos(Vuelo vuelo) {
+        String lista = "--- ASIENTOS DEL VUELO " + vuelo.getNoVuelo() + " ---\n";
+        Asiento[] asientos = vuelo.getAsientos();
+        
+        for (int i = 0; i < asientos.length; i++) {
+            if (asientos[i] != null) {
+                lista += asientos[i].toString() + "\n";
+            }
+        }
+        // Impresión simple
+        JOptionPane.showMessageDialog(null, lista);
+    }
+
+    public void mostrarNomina(Aeropuerto aeropuerto) {
+        String lista = "--- NÓMINA ---\n";
+        Empleado[] empleados = aeropuerto.getEmpleados();
+        
+        for (int i = 0; i < aeropuerto.getIndEmpleados(); i++) {
+            Empleado e = empleados[i];
+            e.SueldoNeto(); 
+            lista += e.getNombre() + " | Sueldo: $" + e.getSueldo() + "\n";
+        }
+        // Impresión simple
+        JOptionPane.showMessageDialog(null, lista);
+    }
+
+    public int verificarVuelos(Aeropuerto aeropuerto) {
+        if (aeropuerto.getIndVuelos() == 0) {
+            JOptionPane.showMessageDialog(null, "No hay vuelos registrados.");
+            return 0;
+        }
+        return 1;
+    }
+
+    // --- CARGA DE DATOS INICIALES ---
+    public Aeropuerto datosInicializados() {
+        Aeropuerto aeropuerto = new Aeropuerto("Benito Juárez", "CDMX");
+
+        // Aerolíneas
+        aeropuerto.addAerolinea("AeroMexico"); 
+        aeropuerto.addAerolinea("Volaris");     
+
+        // 3 Agentes de Mostrador
+        for (int i = 0; i < 3; i++) {
+            AgenteMostrador agente = new AgenteMostrador(1000L + i, "Agente " + (i + 1), 2, 35000.0f);
+            aeropuerto.addEmpleado(agente); 
+        }
+
+        // 1 Vuelo de prueba
+        Vuelo v = new Vuelo(100L, "CDMX", "CUN", "08:00", "10:00", "2h");
+        
+        // Personal del vuelo
+        Piloto p = new Piloto(5000, 1, v, 2000L, "Capitán Juan", 10, 120000f);
+        Azafata az = new Azafata(0, v, 3000L, "Azafata Ana", 3, 45000f);
+
+        p.setVueloAsignado(v);
+        az.setVueloAsignado(v);
+
+        aeropuerto.addVuelo(v, 0); 
+        aeropuerto.addEmpleado(p);
+        aeropuerto.addEmpleado(az);
+
+        return aeropuerto;
     }
 }
-
