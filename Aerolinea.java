@@ -1,4 +1,4 @@
-public class Aerolinea{
+public class Aerolinea implements Serializable{
 	//Atributos
 	private String nombre;
 	private Vuelo vuelos[] = new Vuelo[10];
@@ -55,4 +55,5 @@ public class Aerolinea{
 		return vuelosDisp;
 	}
 }
+
 
