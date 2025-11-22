@@ -1,3 +1,4 @@
+import java.io.Serializable;
 public class Vuelo implements Verificable, Serializable{
 // Atributos
 	private long noVuelo;
@@ -89,5 +90,6 @@ public class Vuelo implements Verificable, Serializable{
         return (this.estado == 1) ? "Disponible" : "No Disponible";
     }
 }
+
 
 
