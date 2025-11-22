@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 
 public class Persistencia{
     //lee objetos del archivo
-    public static Sucursal cargaArchivoPesistencia(){
+    public static Aeropuerto cargaArchivoPesistencia(){
         FileInputStream fisPer = null;
         try {
             fisPer = new FileInputStream("SistemaAeropuerto.ser");
@@ -16,7 +16,7 @@ public class Persistencia{
             ObjectInputStream oisPer = new ObjectInputStream(fisPer);
             
             //lee objeto
-            Sucursal objeto = (Sucursal) oisPer.readObject();
+            Aeropuerto objeto = (Aeropuerto) oisPer.readObject();
 
             return objeto;
 
