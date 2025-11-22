@@ -2,7 +2,7 @@ public class Mensaje extends Thread {
     private boolean ejecutandose;
     private Sucursal sucursal;
 
-    public Mensaje(Sucursal sucursal) {
+    public Mensaje(Aeropuerto aeropuerto) {
         this.sucursal = sucursal;
         ejecutandose = true;
     }
@@ -10,11 +10,13 @@ public class Mensaje extends Thread {
     public void run() {
         while (ejecutandose) {
             try {
-                System.out.println(" Bienvenido a la sucursal " + sucursal.getnoSucursal() + " ubicada en " + sucursal.getDireccion() + ".");
+                System.out.println(" Bienvenido a nuestro sistema de Aeropuertos " + aeropuerto.getNombre() + " ubicada en " + aeropuerto.getDireccion() + ".");
                 Thread.sleep(5000);
-                System.out.println(" Contamos con " + sucursal.getIndice() + " clientes registrados.");
+                System.out.println(" Contamos con " + aeropuerto.getIndAerolineas() + " aerolineas asociadas.");
                 Thread.sleep(5000);
-                System.out.println(" Contamos con " + sucursal.getIndiceCuentas() + " cuentas registradas.");
+                System.out.println(" Y manejamos hasta " + aeropuerto.getIndVuelo() + " vuelos.");
+                Thread.sleep(5000);
+                System.out.println(" Actualmente contamos con " + aeropuerto.getIndEmpleados() + " empleados trabajando en nuestro aeropuerto.");
                 Thread.sleep(5000);
                 System.out.println("\u001B[H\u001B[2J");
             } 
@@ -30,3 +32,4 @@ public class Mensaje extends Thread {
     }
     
 }
+
