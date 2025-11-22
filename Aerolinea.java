@@ -1,3 +1,4 @@
+import java.io.Serializable;
 public class Aerolinea implements Serializable{
 	//Atributos
 	private String nombre;
@@ -55,5 +56,6 @@ public class Aerolinea implements Serializable{
 		return vuelosDisp;
 	}
 }
+
 
 
