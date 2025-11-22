@@ -1,3 +1,4 @@
+import java.io.Serializable;
 public abstract class Empleado implements Serializable{
 	//Atributos
 	protected long idEmpleado;
@@ -41,3 +42,4 @@ public abstract class Empleado implements Serializable{
 	public abstract void SueldoNeto();
 
 }
+
