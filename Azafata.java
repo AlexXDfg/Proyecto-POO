@@ -35,10 +35,11 @@ public class Azafata extends Empleado{
         this.vueloAsignado = vueloAsignado;
     }
 	
-	//Calcula el sueldo neto de azafa
+	//Calcula el sueldo neto de azafata
 	@Override
 	public void SueldoNeto(){
 		sueldo += antiguedad*100;
 		sueldo += cantProductosVendidos*10;
 	}
+
 }
