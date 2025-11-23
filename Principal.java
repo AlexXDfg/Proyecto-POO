@@ -189,29 +189,32 @@ public class Principal {
                 nuevoEmpleado = new Piloto(horas, licencia, vueloPiloto, id, nombre, antiguedad, sueldoBase);
                 break;
             case 2://Copiloto
-                mostrarPilotos(aeropuerto);
-                long idPiloto = Long.parseLong(JOptionPane.showInputDialog("Ingrese el ID del Piloto supervisor:"));
-                Empleado emp = aeropuerto.buscarEmpleado(idPiloto);
-
-                if (emp != null){
-                    Piloto pilotoSup = (Piloto) emp;
-                    int licenciaCop = Integer.parseInt(JOptionPane.showInputDialog("¿Tiene licencia vigente?\n" +
-                                                                            "[0] No\n" + 
-                                                                            "[1] Si\n"));
-                    while(licenciaCop < 0 || licenciaCop > 1){
-                        licenciaCop = Integer.parseInt(JOptionPane.showInputDialog("Opcion no valida intente de nuevo\n" +
-                                                                                "¿Tiene licencia vigente?\n" +
+                if(mostrarPilotos(aeropuerto) != 0){
+                    long idPiloto = Long.parseLong(JOptionPane.showInputDialog("Ingrese el ID del Piloto supervisor:"));
+                    Empleado emp = aeropuerto.buscarEmpleado(idPiloto);
+    
+                    if (emp != null){
+                        Piloto pilotoSup = (Piloto) emp;
+                        int licenciaCop = Integer.parseInt(JOptionPane.showInputDialog("¿Tiene licencia vigente?\n" +
                                                                                 "[0] No\n" + 
                                                                                 "[1] Si\n"));
+                        while(licenciaCop < 0 || licenciaCop > 1){
+                            licenciaCop = Integer.parseInt(JOptionPane.showInputDialog("Opcion no valida intente de nuevo\n" +
+                                                                                    "¿Tiene licencia vigente?\n" +
+                                                                                    "[0] No\n" + 
+                                                                                    "[1] Si\n"));
+                        }
+    
+                        Piloto.Copiloto nuevoCopiloto = pilotoSup.new Copiloto(id, nombre, antiguedad, sueldoBase, licenciaCop);
+                        pilotoSup.setCopiloto(nuevoCopiloto);
+                        nuevoEmpleado = nuevoCopiloto;
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Error: Piloto no encontrado o ID incorrecto.\nEl Copiloto debe asignarse a un Piloto existente.");
+                        return;
                     }
-
-                    Piloto.Copiloto nuevoCopiloto = pilotoSup.new Copiloto(id, nombre, antiguedad, sueldoBase, licenciaCop);
-                    pilotoSup.setCopiloto(nuevoCopiloto);
-                    nuevoEmpleado = nuevoCopiloto;
-                }else{
-                    JOptionPane.showMessageDialog(null, "Error: Piloto no encontrado o ID incorrecto.\nEl Copiloto debe asignarse a un Piloto existente.");
+                }else
                     return;
-                }
+                
                 break;
 
             case 3: // Azafata
@@ -316,15 +319,26 @@ public class Principal {
         JOptionPane.showMessageDialog(null, lista);
     }
 
-    public void mostrarPilotos(Aeropuerto aeropuerto) {
+    public int mostrarPilotos(Aeropuerto aeropuerto) {
         String lista = "--- PILOTOS ---\n";
         Empleado[] empleados = aeropuerto.getEmpleados();
         
+        int cont;
         for (int i = 0; i < aeropuerto.getIndEmpleados(); i++) {
-            if(empleados[i] instanceof Piloto)
-                lista += empleados[i].toString() + "\n";
+            if(empleados[i] instanceof Piloto){
+                if(empleados[i].getCopiloto() != null){
+                    lista += empleados[i].toString() + "\n";
+                    cont++;
+                }
+            }
         }
-        JOptionPane.showMessageDialog(null, lista);
+        if(cont != 0)
+            JOptionPane.showMessageDialog(null, lista);
+        else{
+            JOptionPane.showMessageDialog(null, "No hay pilotos disponibles para agregar un copiloto");
+            return 0;
+        }
+        return 1;
     }
 
     public void mostrarAsientos(Vuelo vuelo) {
@@ -442,6 +456,7 @@ public class Principal {
         return aeropuerto;
     }
 }
+
 
 
 
