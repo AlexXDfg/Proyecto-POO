@@ -109,6 +109,13 @@ public class Aeropuerto implements Serializable{
 		
 		AgenteMostrador agente = (AgenteMostrador) emp;
 
+		// Si el agente ya vendió 600, no le permitimos vender más.
+	    if (agente.getIndBoletos() >= 600) 
+		{
+			System.out.println("Error: Este agente ha alcanzado su límite de ventas");	
+			return null;
+		}
+		
 		Vuelo vuelo = buscarVuelo(noVuelo);
 		if(vuelo == null || vuelo.getEstado() == 0)
 			return null; //ERROR: Vuelo no encontrado o no disponible
@@ -125,6 +132,7 @@ public class Aeropuerto implements Serializable{
 		return nuevoBoleto;
 	}
 }
+
 
 
 
