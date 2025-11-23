@@ -3,7 +3,7 @@ public class Piloto extends Empleado{
 	private int horasVuelo;
 	private int licencia; //en regla(1) o no(0)
 	private Vuelo vueloAsignado;
-	private Copiloto Copiloto;
+	private Copiloto copiloto;
 
 	//Constructores
 	public Piloto(int horasVuelo, int licencia, Vuelo vueloAsignado){
@@ -56,18 +56,18 @@ public class Piloto extends Empleado{
 	// ---------------------------------------------------------
     // CLASE ANIDADA: COPILOTO
     // ---------------------------------------------------------
-	public class Copiloto extends Empleado{
+	class Copiloto extends Empleado{
         private int licenciaCop;
 
-        public Copiloto(long id, String nombre, int antiguedad, float sueldo, int licencia) {
+        public Copiloto(long id, String nombre, int antiguedad, float sueldo, int licenciaCop) {
             super(id, nombre, antiguedad, sueldo);
-            this.licencia = licencia;
+            this.licenciaCop = licenciaCop;
         }
 
         @Override
         public String toString() {
             long vueloId = getVueloAsignado().getNoVuelo();
-            return "Copiloto: " + nombre + " (Licencia: " + ((licenciaCop == 1) ? "En regla" : "Vencida") + ") apoyando en vuelo #" + vueloId;
+            return "ID del empleado: " + idEmpleado + " || Copiloto: " + nombre + " || Antiguedad: " + antiguedad + " || Sueldo: " + sueldo + " || Licencia: " + ((licenciaCop == 1) ? "En regla" : "Vencida") + " || Apoyando en vuelo: " + vueloId;
         }
 
 		@Override
@@ -77,7 +77,7 @@ public class Piloto extends Empleado{
 
 		//Getter
 		public int getLicencia(){
-			return licencia;
+			return licenciaCop;
 		}
     }
 }

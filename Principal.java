@@ -164,7 +164,7 @@ public class Principal {
         "3. Azafata\n" +
         "4. Agente Mostrador\n");
         
-        int indEmp = Integer.parseInt(JOptionPane.showInputDialog(listaPuestos));
+        int indEmp = Integer.parseInt(listaPuestos);
 
         Empleado nuevoEmpleado = null;
 
@@ -205,7 +205,7 @@ public class Principal {
                                                                                 "[1] Si\n"));
                     }
 
-                    Piloto.Copiloto nuevoCopiloto = pilotoSup.new Copiloto(id, nombre, antiguedad, sueldoBase, licCop);
+                    Piloto.Copiloto nuevoCopiloto = pilotoSup.new Copiloto(id, nombre, antiguedad, sueldoBase, licenciaCop);
                     pilotoSup.setCopiloto(nuevoCopiloto);
                     nuevoEmpleado = nuevoCopiloto;
                 }else{
