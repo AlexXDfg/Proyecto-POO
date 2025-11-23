@@ -5,17 +5,17 @@ public class Principal {
     public static void main(String[] args) {
         Principal p = new Principal();
         Aeropuerto aeropuerto = p.datosInicializados();
-        p.menu(aeropuerto);
-    }
 
-    public void menu(Aeropuerto aeropuerto) {
-        
         // Cargar persistencia si existe.
         Aeropuerto persistencia = Persistencia.cargaArchivoPesistencia();
         if (persistencia != null) {
             aeropuerto = persistencia;
         }
         
+        p.menu(aeropuerto);
+    }
+    
+    public void menu(Aeropuerto aeropuerto) {
         // Hilo de mensajes
         Mensaje mensaje = new Mensaje(aeropuerto);
         Thread mensajero = new Thread(mensaje);
@@ -31,7 +31,8 @@ public class Principal {
                 "3. Ver Nómina de Empleados\n" +
                 "4. Vender Boleto\n" +
                 "5. Verificar Estado (Vuelo/Asiento)\n" +
-                "6. Guardar y Salir\n" +
+                "6. ADMINISTRACIÓN (Agregar Vuelos/Empleados)\n"+
+                "7. Guardar y Salir\n" +
                 "--------------------------------\n" +
                 "Seleccione una opción:"
             );
@@ -43,8 +44,7 @@ public class Principal {
 
                 case 2: // Ver Vuelos
                     if (verificarVuelos(aeropuerto) == 0) 
-                        break;
-                    mostrarVuelos(aeropuerto);
+                        mostrarVuelos(aeropuerto);
                     break;
 
                 case 3: // Ver Nómina
@@ -52,74 +52,18 @@ public class Principal {
                     break;
 
                 case 4: // Vender Boleto
-                    // Verificaciones previas
-                    if (verificarVuelos(aeropuerto) == 0) 
-                        break;
-                    
-                    // 1. Mostrar y Seleccionar Vuelo
-                    mostrarVuelos(aeropuerto);
-                    Vuelo vueloSel = seleccionarVuelo(aeropuerto);
-                    if (vueloSel == null) 
-                        break; // Si no encontró vuelo, salir del case
-
-                    // 2. Mostrar y Seleccionar Asiento
-                    mostrarAsientos(vueloSel);
-                    Asiento asientoSel = seleccionarAsiento(vueloSel);
-                    if (asientoSel == null) 
-                        break;
-
-                    // 3. Crear el Pasajero (Método similar a crearCliente)
-                    // "El objeto que envien lo creen en el mismo metodo antes de enviarlo"
-                    Pasajero pasajero = crearPasajero();
-
-                    // 4. Datos adicionales para la venta
-                    long idAgente = Long.parseLong(JOptionPane.showInputDialog("ID del Agente (Ej. 1000):"));
-                    float precio = Float.parseFloat(JOptionPane.showInputDialog("Precio del boleto:"));
-                    long noBoleto = System.currentTimeMillis(); // ID único simple
-
-                    // 5. Enviar objetos al método del aeropuerto
-                    Boleto boletoGenerado = aeropuerto.gestionarVentaBoleto(
-                        idAgente, 
-                        vueloSel.getNoVuelo(), 
-                        asientoSel.getNoAsiento(), 
-                        pasajero, 
-                        noBoleto, 
-                        precio
-                    );
-
-                    if (boletoGenerado != null) {
-                        JOptionPane.showMessageDialog(null, "¡Venta Exitosa!\n" + boletoGenerado.toString());
-                    } 
-                    
-                    else {
-                        JOptionPane.showMessageDialog(null, "Error: Verifique ID Agente o disponibilidad.");
-                    }
+                    venderBoleto(aeropuerto);
                     break;
 
                 case 5: // Verificar Estado (Interface)
-                    String tipo = JOptionPane.showInputDialog("Escriba 'vuelo' o 'asiento':");
-                    
-                    if (tipo != null && tipo.equalsIgnoreCase("vuelo")) {
-                        Vuelo v = seleccionarVuelo(aeropuerto);
-                        if (v != null) 
-                            JOptionPane.showMessageDialog(null, "Estado: " + v.getEstadoDetallado());
-                            
-                    } else if (tipo != null && tipo.equalsIgnoreCase("asiento")) {
-                        long idVuelo = Long.parseLong(JOptionPane.showInputDialog("ID del Vuelo del asiento:"));
-                        Vuelo v = aeropuerto.buscarVuelo(idVuelo);
-                        if (v != null) {
-                            Asiento a = seleccionarAsiento(v);
-                            if (a != null)
-                                JOptionPane.showMessageDialog(null, "Estado: " + a.getEstadoDetallado());
-                        } 
-                        
-                        else {
-                            JOptionPane.showMessageDialog(null, "Vuelo no encontrado.");
-                        }
-                    }
+                    verificarEstado(aeropuerto);
                     break;
 
-                case 6: // Guardar y Salir
+                case 6:
+                    menuAdministracion(aeropuerto);
+                    break;
+                    
+                case 7: // Guardar y Salir
                     mensaje.detener();
                     Persistencia.guardaPersistencia(aeropuerto);
                     JOptionPane.showMessageDialog(null, "Guardando y saliendo...");
@@ -129,7 +73,123 @@ public class Principal {
                     JOptionPane.showMessageDialog(null, "Opción no válida.");
             }
 
-        } while(opcion != 6);
+        } while(opcion != 7);
+    }
+
+    public void menuAdministracion(aeropuerto){
+        String opcAdmin = JOptionPane.showInputDialog(
+            "--- ADMINISTRACIÓN ---\n" +
+            "1. Agregar Nuevo Vuelo\n" +
+            "2. Contratar Nuevo Empleado\n" +
+            "3. Volver"
+        );
+        
+        switch (Integer.parseInt(opcAdmin)){
+            case 1: // Agregar Vuelo
+                nuevoVuelo(aeropuerto);
+                break;
+            case 2: // Agregar Empleado
+                nuevoEmpleado(aeropuerto);
+                break;
+            case 3:
+                break;
+            default:
+                JOptionPane.showMessageDialog(null, "Opcion no valida");
+                break;
+        }
+    }
+
+    public void nuevoVuelo(Aeropuerto aeropuerto){
+        // Seleccionar Aerolínea
+        String listaAerolineas = "Seleccione el índice de la aerolínea:\n";
+        for(int i=0; i<aeropuerto.getIndAerolineas(); i++) {
+            listaAerolineas += i + ". " + aeropuerto.getAerolineas()[i].getNombre() + "\n";
+        }
+        int idxAero = Integer.parseInt(JOptionPane.showInputDialog(listaAerolineas));
+        
+        long noVuelo = Long.parseLong(JOptionPane.showInputDialog("Número de Vuelo:"));
+        String origen = JOptionPane.showInputDialog("Origen:");
+        String destino = JOptionPane.showInputDialog("Destino:");
+        String salida = JOptionPane.showInputDialog("Hora Salida (HH:MM):");
+        String llegada = JOptionPane.showInputDialog("Hora Llegada (HH:MM):");
+        String duracion = JOptionPane.showInputDialog("Duración:");
+
+        Vuelo nuevoVuelo = new Vuelo(noVuelo, origen, destino, salida, llegada, duracion);
+        
+        int resultado = aeropuerto.addVuelo(nuevoVuelo, idxAero);
+        
+        if (resultado == 1)
+            JOptionPane.showMessageDialog(null, "Vuelo agregado exitosamente.");
+        else
+            JOptionPane.showMessageDialog(null, "Error: No se pudo agregar el vuelo (Límite alcanzado o error en índice).");
+    }
+
+    public void nuevoEmpleado(Aeropuerto aeropuerto) {
+        // Datos Generales de cualquier Empleado
+        String nombre = JOptionPane.showInputDialog("Nombre del Empleado:");
+        long id = Long.parseLong(JOptionPane.showInputDialog("ID del Empleado:"));
+        int antiguedad = Integer.parseInt(JOptionPane.showInputDialog("Antigüedad (años):"));
+        float sueldoBase = Float.parseFloat(JOptionPane.showInputDialog("Sueldo Base:"));
+
+        // Seleccionar Tipo de Empleado
+        String listaPuestos = "Seleccione el puesto:\n";
+        listaAerolineas += "1. Piloto\n";
+        listaAerolineas += "2. Azafata\n";
+        listaAerolineas += "3. Agente Mostrador\n";
+        
+        int indEmp = Integer.parseInt(JOptionPane.showInputDialog(listaPuestos));
+
+        Empleado nuevoEmpleado = null;
+
+        switch (indEmp) {
+            case 1: // Piloto
+                int horas = Integer.parseInt(JOptionPane.showInputDialog("Horas de vuelo:"));
+                int licencia = Integer.parseInt(JOptionPane.showInputDialog("¿Tiene licencia vigente?\n" +
+                                                                            "[0] No\n" + 
+                                                                            "[1] Si\n"));
+                while(licencia < 0 || licencia > 1){
+                    licencia = Integer.parseInt(JOptionPane.showInputDialog("Opcion no valida intente de nuevo\n" +
+                                                                            "¿Tiene licencia vigente?\n" +
+                                                                            "[0] No\n" + 
+                                                                            "[1] Si\n"));
+                }
+                
+                Vuelo vueloPiloto = seleccionarVuelo(aeropuerto);
+                if (vueloPiloto == null) {
+                    JOptionPane.showMessageDialog(null, "Debe seleccionar un vuelo para el piloto.");
+                    return;
+                }
+                nuevoEmpleado = new Piloto(horas, licencia, vueloPiloto, id, nombre, antiguedad, sueldoBase);
+                break;
+
+            case 2: // Azafata
+                int productos = Integer.parseInt(JOptionPane.showInputDialog("Productos vendidos (Inicial):"));
+                Vuelo vueloAzafata = seleccionarVuelo(aeropuerto);
+                if (vueloAzafata == null) {
+                    JOptionPane.showMessageDialog(null, "Debe seleccionar un vuelo para la azafata.");
+                    return;
+                }
+                nuevoEmpleado = new Azafata(productos, vueloAzafata, id, nombre, antiguedad, sueldoBase);
+                break;
+
+            case 3:
+                nuevoEmpleado = new AgenteMostrador(id, nombre, antiguedad, sueldoBase);
+                break;
+
+            default:
+                JOptionPane.showMessageDialog(null, "Opcion no valida");
+                return;
+        }
+
+        //Guardar en el Aeropuerto usando tu método existente
+        if (nuevoEmpleado != null) {
+            int resultado = aeropuerto.addEmpleado(nuevoEmpleado);
+            
+            if (resultado == 1)
+                JOptionPane.showMessageDialog(null, "Empleado " + nombre + " contratado exitosamente.");
+            else
+                JOptionPane.showMessageDialog(null, "Error: La nómina está llena (Máx 120 empleados).");
+        }
     }
 
     public Pasajero crearPasajero() {
@@ -218,6 +278,55 @@ public class Principal {
         return 1;
     }
 
+    public void verificarEstado(Aeropuerto aeropuerto) {
+        int seleccion = Integer.parseInt(JOptionPane.showInputDialog("¿Qué desea verificar?\n"+
+                                                                    "[1] Vuelo\n"+
+                                                                    "[2] Asiento\n"));
+        if (seleccion == 1) { // Vuelo
+            Vuelo v = seleccionarVuelo(aeropuerto);
+            if (v != null)
+                JOptionPane.showMessageDialog(null, "Estado: " + v.getEstadoDetallado());
+        } else if (seleccion == 2) { // Asiento
+            long idVuelo = Long.parseLong(JOptionPane.showInputDialog("ID del Vuelo:"));
+            Vuelo v = aeropuerto.buscarVuelo(idVuelo);
+            if (v != null) {
+                Asiento a = seleccionarAsiento(v);
+                if (a != null)
+                    JOptionPane.showMessageDialog(null, "Estado: " + a.getEstadoDetallado());
+            } else {
+                JOptionPane.showMessageDialog(null, "Vuelo no encontrado.");
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Opcion no valida.");
+        }
+    }
+
+    public void venderBoleto(Aeropuerto aeropuerto){
+        if (!verificarVuelos(aeropuerto)) return;
+        
+        mostrarVuelos(aeropuerto);
+        Vuelo vueloSel = seleccionarVuelo(aeropuerto);
+        if (vueloSel == null) return;
+
+        mostrarAsientos(vueloSel);
+        Asiento asientoSel = seleccionarAsiento(vueloSel);
+        if (asientoSel == null) return;
+
+        Pasajero pasajero = crearPasajero();
+        
+        long idAgente = Long.parseLong(JOptionPane.showInputDialog("ID del Agente (Ej. 1000):"));
+        float precio = Float.parseFloat(JOptionPane.showInputDialog("Precio del boleto:"));
+        long noBoleto = System.currentTimeMillis();
+
+        Boleto boleto = aeropuerto.gestionarVentaBoleto(idAgente, vueloSel.getNoVuelo(), asientoSel.getNoAsiento(), pasajero, noBoleto, precio); //
+
+        if (boleto != null) {
+            JOptionPane.showMessageDialog(null, "¡Venta Exitosa!\n" + boleto.toString());
+        } else {
+            JOptionPane.showMessageDialog(null, "Error: ID Agente inválido o asiento ocupado.");
+        }
+    }
+
     // --- CARGA DE DATOS INICIALES ---
     public Aeropuerto datosInicializados() {
         Aeropuerto aeropuerto = new Aeropuerto("Benito Juárez", "CDMX");
@@ -249,3 +358,4 @@ public class Principal {
         return aeropuerto;
     }
 }
+
