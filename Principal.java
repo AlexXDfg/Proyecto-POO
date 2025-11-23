@@ -160,8 +160,9 @@ public class Principal {
         // Seleccionar Tipo de Empleado
         String listaPuestos = JOptionPane.showInputDialog("Seleccione el puesto:\n" +
         "1. Piloto\n" +
-        "2. Azafata\n" +
-        "3. Agente Mostrador\n");
+        "2. Copiloto\n" +
+        "3. Azafata\n" +
+        "4. Agente Mostrador\n");
         
         int indEmp = Integer.parseInt(JOptionPane.showInputDialog(listaPuestos));
 
@@ -187,8 +188,11 @@ public class Principal {
                 }
                 nuevoEmpleado = new Piloto(horas, licencia, vueloPiloto, id, nombre, antiguedad, sueldoBase);
                 break;
+            case 2://Copiloto
+                //ESPERA OLVIDE ALGO
+                break;
 
-            case 2: // Azafata
+            case 3: // Azafata
                 int productos = Integer.parseInt(JOptionPane.showInputDialog("Productos vendidos (Inicial):"));
                 Vuelo vueloAzafata = seleccionarVuelo(aeropuerto);
                 if (vueloAzafata == null) {
@@ -198,7 +202,7 @@ public class Principal {
                 nuevoEmpleado = new Azafata(productos, vueloAzafata, id, nombre, antiguedad, sueldoBase);
                 break;
 
-            case 3:
+            case 4:
                 nuevoEmpleado = new AgenteMostrador(id, nombre, antiguedad, sueldoBase);
                 break;
 
@@ -402,4 +406,5 @@ public class Principal {
         return aeropuerto;
     }
 }
+
 
