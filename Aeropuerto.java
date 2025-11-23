@@ -103,36 +103,32 @@ public class Aeropuerto implements Serializable{
     }
 
 	public Boleto gestionarVentaBoleto(long idAgente, long noVuelo, long noAsiento, Pasajero pasajero, long noBoleto, float precio){
-		Empleado emp = buscarEmpleado(idAgente);
-		if(!(emp instanceof AgenteMostrador))
-			return null; //ERROR: ID de agente no válido
-		
-		AgenteMostrador agente = (AgenteMostrador) emp;
+        Empleado emp = buscarEmpleado(idAgente);
+        if(!(emp instanceof AgenteMostrador))
+            return null; //ERROR: ID de agente no válido
+        
+        AgenteMostrador agente = (AgenteMostrador) emp;
 
-		// Si el agente ya vendió 600, no le permitimos vender más.
-	    if (agente.getIndBoletos() >= 600) 
-		{
-			System.out.println("Error: Este agente ha alcanzado su límite de ventas");	
-			return null;
-		}
-		
-		Vuelo vuelo = buscarVuelo(noVuelo);
-		if(vuelo == null || vuelo.getEstado() == 0)
-			return null; //ERROR: Vuelo no encontrado o no disponible
-		
-		Asiento asiento = vuelo.buscarAsiento(noAsiento);
-		if (asiento == null)
-			return null; //ERROR: Número de asiento no existe en este vuelo
-		if (asiento.getDisponibilidad() == 0)
-			return null;//ERROR: El asiento ya está ocupado
+        Vuelo vuelo = buscarVuelo(noVuelo);
+        if(vuelo == null || vuelo.getEstado() == 0)
+            return null; //ERROR: Vuelo no encontrado o no disponible
+        
+        Asiento asiento = vuelo.buscarAsiento(noAsiento);
+        if (asiento == null)
+            return null; //ERROR: Número de asiento no existe en este vuelo
+        if (asiento.getDisponibilidad() == 0)
+            return null;//ERROR: El asiento ya está ocupado
 
-		Boleto nuevoBoleto = new Boleto(precio, noBoleto, asiento, asiento.getTipo());
-		asiento.asignarBoleto(nuevoBoleto);
-		agente.registrarVenta(nuevoBoleto);
-		return nuevoBoleto;
-	}
+        Boleto nuevoBoleto = new Boleto(precio, noBoleto, asiento, asiento.getTipo());
+        asiento.asignarBoleto(nuevoBoleto);
+        agente.registrarVenta(nuevoBoleto);
+        
+        // Verificar si el vuelo se llena después de la venta
+        vuelo.verificarDisponibilidad();
+        
+        return nuevoBoleto;
+    }
 }
-
 
 
 

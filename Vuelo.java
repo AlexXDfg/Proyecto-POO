@@ -89,6 +89,19 @@ public class Vuelo implements Verificable, Serializable{
     public String getEstadoDetallado() {
         return (this.estado == 1) ? "Disponible" : "No Disponible";
     }
+
+    // Método para verificar si el vuelo está lleno y marcarlo como no disponible
+    public void verificarDisponibilidad() {
+        int asientosDisponibles = 0;
+        for (int i = 0; i < asientos.length; i++) {
+            if (asientos[i] != null && asientos[i].getDisponibilidad() == 1) {
+                asientosDisponibles++;
+            }
+        }
+        if (asientosDisponibles == 0) {
+            this.estado = 0; // Marcar vuelo como no disponible
+        }
+    }
 }
 
 
