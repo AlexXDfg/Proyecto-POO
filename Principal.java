@@ -5,17 +5,17 @@ public class Principal {
     public static void main(String[] args) {
         Principal p = new Principal();
         Aeropuerto aeropuerto = p.datosInicializados();
-
+        p.menu(aeropuerto);
+    }
+    
+    public void menu(Aeropuerto aeropuerto) {
+        
         // Cargar persistencia si existe.
         Aeropuerto persistencia = Persistencia.cargaArchivoPesistencia();
         if (persistencia != null) {
             aeropuerto = persistencia;
         }
-        
-        p.menu(aeropuerto);
-    }
-    
-    public void menu(Aeropuerto aeropuerto) {
+
         // Hilo de mensajes
         Mensaje mensaje = new Mensaje(aeropuerto);
         Thread mensajero = new Thread(mensaje);
@@ -36,14 +36,15 @@ public class Principal {
                 "--------------------------------\n" +
                 "Seleccione una opción:"
             );
-            
+            opcion = Integer.parseInt(entrada);
+
             switch(opcion) {
                 case 1: // Ver Aeropuerto
                     JOptionPane.showMessageDialog(null, aeropuerto.toString());
                     break;
 
                 case 2: // Ver Vuelos
-                    if (verificarVuelos(aeropuerto) == 0) 
+                    if (verificarVuelos(aeropuerto) == 1) 
                         mostrarVuelos(aeropuerto);
                     break;
 
@@ -76,7 +77,7 @@ public class Principal {
         } while(opcion != 7);
     }
 
-    public void menuAdministracion(aeropuerto){
+    public void menuAdministracion(Aeropuerto aeropuerto){
         String opcAdmin = JOptionPane.showInputDialog(
             "--- ADMINISTRACIÓN ---\n" +
             "1. Agregar Nuevo Vuelo\n" +
@@ -133,9 +134,9 @@ public class Principal {
 
         // Seleccionar Tipo de Empleado
         String listaPuestos = "Seleccione el puesto:\n";
-        listaAerolineas += "1. Piloto\n";
-        listaAerolineas += "2. Azafata\n";
-        listaAerolineas += "3. Agente Mostrador\n";
+        listaPuestos += "1. Piloto\n";
+        listaPuestos += "2. Azafata\n";
+        listaPuestos += "3. Agente Mostrador\n";
         
         int indEmp = Integer.parseInt(JOptionPane.showInputDialog(listaPuestos));
 
@@ -302,7 +303,7 @@ public class Principal {
     }
 
     public void venderBoleto(Aeropuerto aeropuerto){
-        if (!verificarVuelos(aeropuerto)) return;
+        if (verificarVuelos(aeropuerto) == 0) return;
         
         mostrarVuelos(aeropuerto);
         Vuelo vueloSel = seleccionarVuelo(aeropuerto);
