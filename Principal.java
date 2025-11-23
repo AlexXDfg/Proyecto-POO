@@ -30,10 +30,11 @@ public class Principal {
                 "2. Ver Vuelos Disponibles\n" +
                 "3. Ver Nómina de Empleados\n" +
                 "4. Ver Empleados\n" +
-                "5. Vender Boleto\n" +
-                "6. Verificar Estado (Vuelo/Asiento)\n" +
-                "7. ADMINISTRACIÓN (Agregar Vuelos/Empleados)\n"+
-                "8. Guardar y Salir\n" +
+                "5. Ver Aerolineas\n" +
+                "6. Vender Boleto\n" +
+                "7. Verificar Estado (Vuelo/Asiento)\n" +
+                "8. ADMINISTRACIÓN (Agregar Vuelos/Empleados/Aerolíneas)\n"+
+                "9. Guardar y Salir\n" +
                 "--------------------------------\n" +
                 "Seleccione una opción:"
             );
@@ -57,19 +58,23 @@ public class Principal {
                     mostrarEmpleados(aeropuerto);
                     break;
 
-                case 5: // Vender Boleto
+                case 5: // Ver Aerolineas
+                    mostrarAerolineas(aeropuerto);
+                    break;
+
+                case 6: // Vender Boleto
                     venderBoleto(aeropuerto);
                     break;
 
-                case 6: // Verificar Estado (Interface)
+                case 7: // Verificar Estado (Interface)
                     verificarEstado(aeropuerto);
                     break;
 
-                case 7: // Administración
+                case 8: // Administración
                     menuAdministracion(aeropuerto);
                     break;
                     
-                case 8: // Guardar y Salir
+                case 9: // Guardar y Salir
                     mensaje.detener();
                     Persistencia.guardaPersistencia(aeropuerto);
                     JOptionPane.showMessageDialog(null, "Guardando y saliendo...");
@@ -79,7 +84,7 @@ public class Principal {
                     JOptionPane.showMessageDialog(null, "Opción no válida.");
             }
 
-        } while(opcion != 8);
+        } while(opcion != 9);
     }
 
     public void menuAdministracion(Aeropuerto aeropuerto){
@@ -87,7 +92,8 @@ public class Principal {
             "--- ADMINISTRACIÓN ---\n" +
             "1. Agregar Nuevo Vuelo\n" +
             "2. Contratar Nuevo Empleado\n" +
-            "3. Volver"
+            "3. Agregar Nueva Aerolínea\n" +
+            "4. Volver"
         );
         
         switch (Integer.parseInt(opcAdmin)){
@@ -97,7 +103,10 @@ public class Principal {
             case 2: // Agregar Empleado
                 nuevoEmpleado(aeropuerto);
                 break;
-            case 3:
+            case 3: // Agregar Aerolínea
+                nuevaAerolinea(aeropuerto);
+                break;
+            case 4: // Volver
                 break;
             default:
                 JOptionPane.showMessageDialog(null, "Opcion no valida");
@@ -130,6 +139,17 @@ public class Principal {
             JOptionPane.showMessageDialog(null, "Error: No se pudo agregar el vuelo (Límite alcanzado o error en índice).");
     }
 
+    public void nuevaAerolinea(Aeropuerto aeropuerto){
+        String nombre = JOptionPane.showInputDialog("Nombre de la nueva Aerolínea:");
+
+        int resultado = aeropuerto.addAerolinea(nombre);
+        
+        if (resultado == 1)
+            JOptionPane.showMessageDialog(null, "Aerolínea " + nombre + " agregada exitosamente.");
+        else
+            JOptionPane.showMessageDialog(null, "Error: No se pudo agregar la aerolínea (Límite alcanzado).");
+    }
+
     public void nuevoEmpleado(Aeropuerto aeropuerto) {
         // Datos Generales de cualquier Empleado
         String nombre = JOptionPane.showInputDialog("Nombre del Empleado:");
@@ -138,10 +158,10 @@ public class Principal {
         float sueldoBase = Float.parseFloat(JOptionPane.showInputDialog("Sueldo Base:"));
 
         // Seleccionar Tipo de Empleado
-        String listaPuestos = "Seleccione el puesto:\n";
-        listaPuestos += "1. Piloto\n";
-        listaPuestos += "2. Azafata\n";
-        listaPuestos += "3. Agente Mostrador\n";
+        String listaPuestos = JOptionPane.showInputDialog("Seleccione el puesto:\n" +
+        "1. Piloto\n" +
+        "2. Azafata\n" +
+        "3. Agente Mostrador\n");
         
         int indEmp = Integer.parseInt(JOptionPane.showInputDialog(listaPuestos));
 
@@ -247,6 +267,18 @@ public class Principal {
             }
         }
         // Impresión simple, sin librerías raras
+        JOptionPane.showMessageDialog(null, lista);
+    }
+
+    public void mostrarAerolineas(Aeropuerto aeropuerto) {
+        String lista = "--- AEROLÍNEAS ---\n";
+        Aerolinea[] aerolineas = aeropuerto.getAerolineas();
+        
+        for (int i = 0; i < aeropuerto.getIndAerolineas(); i++) {
+            Aerolinea a = aerolineas[i];
+            lista += a.toString() + "\n";
+        }
+        // Impresión simple
         JOptionPane.showMessageDialog(null, lista);
     }
 
