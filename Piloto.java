@@ -37,6 +37,9 @@ public class Piloto extends Empleado{
 	public Vuelo getVueloAsignado(){
 		return vueloAsignado;
 	}
+	public Copiloto getCopiloto(){
+		return copiloto;
+	}
 	
 	//Setters
 	public void setVueloAsignado(Vuelo vueloAsignado){
@@ -81,4 +84,5 @@ public class Piloto extends Empleado{
 		}
     }
 }
+
 
