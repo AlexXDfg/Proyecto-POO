@@ -3,6 +3,7 @@ public class Piloto extends Empleado{
 	private int horasVuelo;
 	private int licencia; //en regla(1) o no(0)
 	private Vuelo vueloAsignado;
+	private Copiloto Copiloto;
 
 	//Constructores
 	public Piloto(int horasVuelo, int licencia, Vuelo vueloAsignado){
@@ -41,6 +42,9 @@ public class Piloto extends Empleado{
 	public void setVueloAsignado(Vuelo vueloAsignado){
         this.vueloAsignado = vueloAsignado;
     }
+	public void setCopiloto(Copiloto copiloto){
+		this.copiloto = copiloto;
+	}
 
 	//Calcula el sueldo neto del piloto
 	@Override
@@ -52,28 +56,29 @@ public class Piloto extends Empleado{
 	// ---------------------------------------------------------
     // CLASE ANIDADA: COPILOTO
     // ---------------------------------------------------------
-	public class Copiloto implements Serializable{
-        private String nombre;
+	public class Copiloto extends Empleado{
         private int licenciaCop;
 
-        public Copiloto(String nombre, int licenciaCop) {
-            this.nombre = nombre;
-            this.licenciaCop = licenciaCop;
+        public Copiloto(long id, String nombre, int antiguedad, float sueldo, int licencia) {
+            super(id, nombre, antiguedad, sueldo);
+            this.licencia = licencia;
         }
 
         @Override
         public String toString() {
             long vueloId = getVueloAsignado().getNoVuelo();
-            String estadoLic = (licenciaCop == 1) ? "En regla" : "Vencida";
-            
-            return "Copiloto: " + nombre + " (Licencia: " + estadoLic + ") apoyando en vuelo #" + vueloId;
+            return "Copiloto: " + nombre + " (Licencia: " + ((licenciaCop == 1) ? "En regla" : "Vencida") + ") apoyando en vuelo #" + vueloId;
         }
-        
-        public String getNombre(){
-			return nombre;
-		}
-        public int getLicenciaCop(){
-			return licenciaCop;
+
+		@Override
+        public float SueldoNeto() {
+            return (this.sueldo + (antiguedad * 50) + (horasVuelo * 25)) * (1 + IVA);
+        }
+
+		//Getter
+		public int getLicencia(){
+			return licencia;
 		}
     }
 }
+
