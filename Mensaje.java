@@ -10,7 +10,7 @@ public class Mensaje extends Thread {
     public void run() {
         while (ejecutandose) {
             try {
-                System.out.println(" Bienvenido a nuestro sistema de Aeropuertos " + aeropuerto.getNombre() + " ubicada en " + aeropuerto.getDireccion() + ".");
+                System.out.println(" Bienvenido a nuestro sistema de Aeropuertos " + aeropuerto.getNombre() + " ubicado en " + aeropuerto.getDireccion() + ".");
                 Thread.sleep(5000);
                 System.out.println(" Contamos con " + aeropuerto.getIndAerolineas() + " aerolineas asociadas.");
                 Thread.sleep(5000);
