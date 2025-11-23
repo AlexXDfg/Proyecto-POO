@@ -189,7 +189,29 @@ public class Principal {
                 nuevoEmpleado = new Piloto(horas, licencia, vueloPiloto, id, nombre, antiguedad, sueldoBase);
                 break;
             case 2://Copiloto
-                //ESPERA OLVIDE ALGO
+                mostrarPilotos(aeropuerto);
+                long idPiloto = Long.parseLong(JOptionPane.showInputDialog("Ingrese el ID del Piloto supervisor:"));
+                Empleado emp = aeropuerto.buscarEmpleado(idPiloto);
+
+                if (emp != null){
+                    Piloto pilotoSup = (Piloto) emp;
+                    int licenciaCop = Integer.parseInt(JOptionPane.showInputDialog("¿Tiene licencia vigente?\n" +
+                                                                            "[0] No\n" + 
+                                                                            "[1] Si\n"));
+                    while(licenciaCop < 0 || licenciaCop > 1){
+                        licenciaCop = Integer.parseInt(JOptionPane.showInputDialog("Opcion no valida intente de nuevo\n" +
+                                                                                "¿Tiene licencia vigente?\n" +
+                                                                                "[0] No\n" + 
+                                                                                "[1] Si\n"));
+                    }
+
+                    Piloto.Copiloto nuevoCopiloto = pilotoSup.new Copiloto(id, nombre, antiguedad, sueldoBase, licCop);
+                    pilotoSup.setCopiloto(nuevoCopiloto);
+                    nuevoEmpleado = nuevoCopiloto;
+                }else{
+                    JOptionPane.showMessageDialog(null, "Error: Piloto no encontrado o ID incorrecto.\nEl Copiloto debe asignarse a un Piloto existente.");
+                    return;
+                }
                 break;
 
             case 3: // Azafata
@@ -290,6 +312,17 @@ public class Principal {
         for (int i = 0; i < aeropuerto.getIndEmpleados(); i++) {
             Empleado e = empleados[i];
             lista += e.toString() + "\n";
+        }
+        JOptionPane.showMessageDialog(null, lista);
+    }
+
+    public void mostrarPilotos(Aeropuerto aeropuerto) {
+        String lista = "--- PILOTOS ---\n";
+        Empleado[] empleados = aeropuerto.getEmpleados();
+        
+        for (int i = 0; i < aeropuerto.getIndEmpleados(); i++) {
+            if(empleados[i] instanceof Piloto)
+                lista += empleados[i].toString() + "\n";
         }
         JOptionPane.showMessageDialog(null, lista);
     }
@@ -406,5 +439,6 @@ public class Principal {
         return aeropuerto;
     }
 }
+
 
 
