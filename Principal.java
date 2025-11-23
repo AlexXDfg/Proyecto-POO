@@ -427,18 +427,22 @@ public class Principal {
         
         // Personal del vuelo
         Piloto p = new Piloto(5000, 1, v, 2000L, "Capitán Juan", 10, 120000f);
+        Piloto.Copiloto c = p.new Copiloto(2001L, "Copiloto Luis", 5, 80000f, 1);
         Azafata az = new Azafata(0, v, 3000L, "Azafata Ana", 3, 45000f);
 
+        p.setCopiloto(c);
         p.setVueloAsignado(v);
         az.setVueloAsignado(v);
 
         aeropuerto.addVuelo(v, 0); 
         aeropuerto.addEmpleado(p);
+        aeropuerto.addEmpleado(c);
         aeropuerto.addEmpleado(az);
 
         return aeropuerto;
     }
 }
+
 
 
 
