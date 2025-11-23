@@ -38,7 +38,7 @@ public class Azafata extends Empleado{
 	//Calcula el sueldo neto de azafata
 	@Override
     public float SueldoNeto() {
-        float s = (this.sueldo + (antiguedad * 100) + (cantProductosVendidos * 10)) * (1 + IVA);
+        float s = (this.sueldo + (antiguedad * 100) + (cantProductosVendidos * 10)) * (1 - IVA);
         return s;
     }  
 }
