@@ -48,4 +48,32 @@ public class Piloto extends Empleado{
 		float s = (this.sueldo + (antiguedad * 100) + (horasVuelo * 50)) * (1 + IVA);
 		return s;
 	}
+
+	// ---------------------------------------------------------
+    // CLASE ANIDADA: COPILOTO
+    // ---------------------------------------------------------
+	public class Copiloto implements Serializable{
+        private String nombre;
+        private int licenciaCop;
+
+        public Copiloto(String nombre, int licenciaCop) {
+            this.nombre = nombre;
+            this.licenciaCop = licenciaCop;
+        }
+
+        @Override
+        public String toString() {
+            long vueloId = getVueloAsignado().getNoVuelo();
+            String estadoLic = (licenciaCop == 1) ? "En regla" : "Vencida";
+            
+            return "Copiloto: " + nombre + " (Licencia: " + estadoLic + ") apoyando en vuelo #" + vueloId;
+        }
+        
+        public String getNombre(){
+			return nombre;
+		}
+        public int getLicenciaCop(){
+			return licenciaCop;
+		}
+    }
 }
