@@ -24,7 +24,7 @@ public class Principal {
         int opcion;
 
         do {
-            String entrada = JOptionPane.showInputDialog(
+            opcion = Validacion.validaInt(
                 "--- AEROPUERTO: " + aeropuerto.getNombre() + " ---\n" +
                 "1. Ver Información del Aeropuerto\n" +
                 "2. Ver Vuelos Disponibles\n" +
@@ -38,7 +38,6 @@ public class Principal {
                 "--------------------------------\n" +
                 "Seleccione una opción:"
             );
-            opcion = Integer.parseInt(entrada);
 
             switch(opcion) {
                 case 1: // Ver Aeropuerto
@@ -88,7 +87,7 @@ public class Principal {
     }
 
     public void menuAdministracion(Aeropuerto aeropuerto){
-        String opcAdmin = JOptionPane.showInputDialog(
+        int opcAdmin = Validacion.validaInt(
             "--- ADMINISTRACIÓN ---\n" +
             "1. Agregar Nuevo Vuelo\n" +
             "2. Contratar Nuevo Empleado\n" +
@@ -96,7 +95,7 @@ public class Principal {
             "4. Volver"
         );
         
-        switch (Integer.parseInt(opcAdmin)){
+        switch (opcAdmin){
             case 1: // Agregar Vuelo
                 nuevoVuelo(aeropuerto);
                 break;
@@ -120,9 +119,9 @@ public class Principal {
         for(int i=0; i<aeropuerto.getIndAerolineas(); i++) {
             listaAerolineas += i + ". " + aeropuerto.getAerolineas()[i].getNombre() + "\n";
         }
-        int idxAero = Integer.parseInt(JOptionPane.showInputDialog(listaAerolineas));
+        int idxAero = Validacion.validaInt(listaAerolineas);
         
-        long noVuelo = Long.parseLong(JOptionPane.showInputDialog("Número de Vuelo:"));
+        long noVuelo = Validacion.validaLong("Número de Vuelo:");
         String origen = JOptionPane.showInputDialog("Origen:");
         String destino = JOptionPane.showInputDialog("Destino:");
         String salida = JOptionPane.showInputDialog("Hora Salida (HH:MM):");
@@ -153,32 +152,30 @@ public class Principal {
     public void nuevoEmpleado(Aeropuerto aeropuerto) {
         // Datos Generales de cualquier Empleado
         String nombre = JOptionPane.showInputDialog("Nombre del Empleado:");
-        long id = Long.parseLong(JOptionPane.showInputDialog("ID del Empleado:"));
-        int antiguedad = Integer.parseInt(JOptionPane.showInputDialog("Antigüedad (años):"));
-        float sueldoBase = Float.parseFloat(JOptionPane.showInputDialog("Sueldo Base:"));
+        long id = Validacion.validaLong("ID del Empleado:");
+        int antiguedad = Validacion.validaInt("Antigüedad (años):");
+        float sueldoBase = Validacion.validaFloat("Sueldo Base:");
 
         // Seleccionar Tipo de Empleado
-        String listaPuestos = JOptionPane.showInputDialog("Seleccione el puesto:\n" +
+        int indEmp = Validacion.validaInt("Seleccione el puesto:\n" +
         "1. Piloto\n" +
         "2. Copiloto\n" +
         "3. Azafata\n" +
         "4. Agente Mostrador\n");
-        
-        int indEmp = Integer.parseInt(listaPuestos);
 
         Empleado nuevoEmpleado = null;
 
         switch (indEmp) {
             case 1: // Piloto
-                int horas = Integer.parseInt(JOptionPane.showInputDialog("Horas de vuelo:"));
-                int licencia = Integer.parseInt(JOptionPane.showInputDialog("¿Tiene licencia vigente?\n" +
+                int horas = Validacion.validaInt("Horas de vuelo:");
+                int licencia = Validacion.validaInt("¿Tiene licencia vigente?\n" +
                                                                             "[0] No\n" + 
-                                                                            "[1] Si\n"));
+                                                                            "[1] Si\n");
                 while(licencia < 0 || licencia > 1){
-                    licencia = Integer.parseInt(JOptionPane.showInputDialog("Opcion no valida intente de nuevo\n" +
+                    licencia = Validacion.validaInt("Opcion no valida intente de nuevo\n" +
                                                                             "¿Tiene licencia vigente?\n" +
                                                                             "[0] No\n" + 
-                                                                            "[1] Si\n"));
+                                                                            "[1] Si\n");
                 }
                 
                 Vuelo vueloPiloto = seleccionarVuelo(aeropuerto);
@@ -186,23 +183,29 @@ public class Principal {
                     JOptionPane.showMessageDialog(null, "Debe seleccionar un vuelo para el piloto.");
                     return;
                 }
+
+                if (vueloTienePiloto(aeropuerto, vueloPiloto) == 1) {
+                    JOptionPane.showMessageDialog(null, "Error: El vuelo ya tiene un piloto asignado.");
+                    return;
+                }
+
                 nuevoEmpleado = new Piloto(horas, licencia, vueloPiloto, id, nombre, antiguedad, sueldoBase);
                 break;
             case 2://Copiloto
                 if(mostrarPilotos(aeropuerto) != 0){
-                    long idPiloto = Long.parseLong(JOptionPane.showInputDialog("Ingrese el ID del Piloto supervisor:"));
+                    long idPiloto = Validacion.validaLong("Ingrese el ID del Piloto supervisor:");
                     Empleado emp = aeropuerto.buscarEmpleado(idPiloto);
     
                     if (emp != null){
                         Piloto pilotoSup = (Piloto) emp;
-                        int licenciaCop = Integer.parseInt(JOptionPane.showInputDialog("¿Tiene licencia vigente?\n" +
+                        int licenciaCop = Validacion.validaInt("¿Tiene licencia vigente?\n" +
                                                                                 "[0] No\n" + 
-                                                                                "[1] Si\n"));
+                                                                                "[1] Si\n");
                         while(licenciaCop < 0 || licenciaCop > 1){
-                            licenciaCop = Integer.parseInt(JOptionPane.showInputDialog("Opcion no valida intente de nuevo\n" +
+                            licenciaCop = Validacion.validaInt("Opcion no valida intente de nuevo\n" +
                                                                                     "¿Tiene licencia vigente?\n" +
                                                                                     "[0] No\n" + 
-                                                                                    "[1] Si\n"));
+                                                                                    "[1] Si\n");
                         }
     
                         Piloto.Copiloto nuevoCopiloto = pilotoSup.new Copiloto(id, nombre, antiguedad, sueldoBase, licenciaCop);
@@ -218,7 +221,7 @@ public class Principal {
                 break;
 
             case 3: // Azafata
-                int productos = Integer.parseInt(JOptionPane.showInputDialog("Productos vendidos (Inicial):"));
+                int productos = Validacion.validaInt("Productos vendidos (Inicial):");
                 Vuelo vueloAzafata = seleccionarVuelo(aeropuerto);
                 if (vueloAzafata == null) {
                     JOptionPane.showMessageDialog(null, "Debe seleccionar un vuelo para la azafata.");
@@ -248,7 +251,7 @@ public class Principal {
 
     public Pasajero crearPasajero() {
         String nombre = JOptionPane.showInputDialog("Nombre del Pasajero:");
-        long id = Long.parseLong(JOptionPane.showInputDialog("ID del Pasajero:"));
+        long id = Validacion.validaLong("ID del Pasajero:");
         String doc = JOptionPane.showInputDialog("Documento:");
         String tel = JOptionPane.showInputDialog("Teléfono:");
 
@@ -256,8 +259,21 @@ public class Principal {
         return nuevo;
     }
 
+    public int vueloTienePiloto(Aeropuerto aeropuerto, Vuelo vuelo) {
+        Empleado[] empleados = aeropuerto.getEmpleados();
+        for (int i = 0; i < aeropuerto.getIndEmpleados(); i++) {
+            if (empleados[i] instanceof Piloto) {
+                Piloto p = (Piloto) empleados[i];
+                if (p.getVueloAsignado() != null && p.getVueloAsignado().equals(vuelo)) {
+                    return 1;
+                }
+            }
+        }
+        return 0;
+    }
+
     public Vuelo seleccionarVuelo(Aeropuerto aeropuerto) {
-        long noVuelo = Long.parseLong(JOptionPane.showInputDialog("Ingrese el Número (#) de Vuelo:"));
+        long noVuelo = Validacion.validaLong("Ingrese el Número (#) de Vuelo:");
         Vuelo v = aeropuerto.buscarVuelo(noVuelo);
         if (v == null) {
             JOptionPane.showMessageDialog(null, "Vuelo no encontrado.");
@@ -266,7 +282,7 @@ public class Principal {
     }
 
     public Asiento seleccionarAsiento(Vuelo vuelo) {
-        long noAsiento = Long.parseLong(JOptionPane.showInputDialog("Ingrese el Número de Asiento:"));
+        long noAsiento = Validacion.validaLong("Ingrese el Número de Asiento:");
         Asiento a = vuelo.buscarAsiento(noAsiento);
         
         if (a == null) {
@@ -323,16 +339,17 @@ public class Principal {
         String lista = "--- PILOTOS ---\n";
         Empleado[] empleados = aeropuerto.getEmpleados();
         
-        int cont;
+        int cont = 0;
         for (int i = 0; i < aeropuerto.getIndEmpleados(); i++) {
             if(empleados[i] instanceof Piloto){
-                if(empleados[i].getCopiloto() != null){
-                    lista += empleados[i].toString() + "\n";
+                Piloto piloto = (Piloto) empleados[i];
+                if(piloto.getCopiloto() == null){
+                    lista += piloto.toString() + "\n";
                     cont++;
                 }
             }
         }
-        if(cont != 0)
+        if(cont > 0)
             JOptionPane.showMessageDialog(null, lista);
         else{
             JOptionPane.showMessageDialog(null, "No hay pilotos disponibles para agregar un copiloto");
@@ -374,15 +391,15 @@ public class Principal {
     }
 
     public void verificarEstado(Aeropuerto aeropuerto) {
-        int seleccion = Integer.parseInt(JOptionPane.showInputDialog("¿Qué desea verificar?\n"+
+        int seleccion = Validacion.validaInt("¿Qué desea verificar?\n"+
                                                                     "[1] Vuelo\n"+
-                                                                    "[2] Asiento\n"));
+                                                                    "[2] Asiento\n");
         if (seleccion == 1) { // Vuelo
             Vuelo v = seleccionarVuelo(aeropuerto);
             if (v != null)
                 JOptionPane.showMessageDialog(null, "Estado: " + v.getEstadoDetallado());
         } else if (seleccion == 2) { // Asiento
-            long idVuelo = Long.parseLong(JOptionPane.showInputDialog("ID del Vuelo:"));
+            long idVuelo = Validacion.validaLong("ID del Vuelo:");
             Vuelo v = aeropuerto.buscarVuelo(idVuelo);
             if (v != null) {
                 Asiento a = seleccionarAsiento(v);
@@ -409,8 +426,8 @@ public class Principal {
 
         Pasajero pasajero = crearPasajero();
         
-        long idAgente = Long.parseLong(JOptionPane.showInputDialog("ID del Agente (Ej. 1000):"));
-        float precio = Float.parseFloat(JOptionPane.showInputDialog("Precio del boleto:"));
+        long idAgente = Validacion.validaLong("ID del Agente (Ej. 1000):");
+        float precio = Validacion.validaFloat("Precio del boleto:");
         long noBoleto = System.currentTimeMillis();
 
         Boleto boleto = aeropuerto.gestionarVentaBoleto(idAgente, vueloSel.getNoVuelo(), asientoSel.getNoAsiento(), pasajero, noBoleto, precio); //
