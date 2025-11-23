@@ -44,8 +44,8 @@ public class Piloto extends Empleado{
 
 	//Calcula el sueldo neto del piloto
 	@Override
-	public void SueldoNeto(){
-		sueldo += antiguedad*100;
-		sueldo += horasVuelo*100;
+	public float SueldoNeto(){
+		float s = (this.sueldo + (antiguedad * 100) + (horasVuelo * 50)) * (1 + IVA);
+		return s;
 	}
 }

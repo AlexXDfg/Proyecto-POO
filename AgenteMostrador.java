@@ -38,8 +38,8 @@ public class AgenteMostrador extends Empleado {
 	
 	//Calcula el sueldo neto del agente de mostrador
 	@Override
-	public void SueldoNeto(){
-		sueldo += antiguedad*100;
-		sueldo += indBoletos*10;
+	public float SueldoNeto() { 
+		float s = (this.sueldo + (antiguedad * 100) + (indBoletos * 10)) * (1 + IVA);
+        return s;
 	}
 }

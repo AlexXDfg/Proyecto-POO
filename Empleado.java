@@ -5,6 +5,7 @@ public abstract class Empleado implements Serializable{
 	protected String nombre;
 	protected int antiguedad;//Cantidad en años
 	protected float sueldo;
+	protected static float IVA = 0.16f;
 
 	//Constructores
 	public Empleado(){}
@@ -39,7 +40,7 @@ public abstract class Empleado implements Serializable{
 	}
 	
 	//Metodo abstracto (para heredar) que calcula el sueldo neto de cada empleado
-	public abstract void SueldoNeto();
+	public abstract float SueldoNeto();
 
 }
 

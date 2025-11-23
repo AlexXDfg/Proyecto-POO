@@ -207,7 +207,6 @@ public class Principal {
                 return;
         }
 
-        //Guardar en el Aeropuerto usando tu método existente
         if (nuevoEmpleado != null) {
             int resultado = aeropuerto.addEmpleado(nuevoEmpleado);
             
@@ -266,7 +265,6 @@ public class Principal {
                 }
             }
         }
-        // Impresión simple, sin librerías raras
         JOptionPane.showMessageDialog(null, lista);
     }
 
@@ -278,7 +276,6 @@ public class Principal {
             Aerolinea a = aerolineas[i];
             lista += a.toString() + "\n";
         }
-        // Impresión simple
         JOptionPane.showMessageDialog(null, lista);
     }
 
@@ -290,7 +287,6 @@ public class Principal {
             Empleado e = empleados[i];
             lista += e.toString() + "\n";
         }
-        // Impresión simple
         JOptionPane.showMessageDialog(null, lista);
     }
 
@@ -303,7 +299,6 @@ public class Principal {
                 lista += asientos[i].toString() + "\n";
             }
         }
-        // Impresión simple
         JOptionPane.showMessageDialog(null, lista);
     }
 
@@ -313,10 +308,9 @@ public class Principal {
         
         for (int i = 0; i < aeropuerto.getIndEmpleados(); i++) {
             Empleado e = empleados[i];
-            e.SueldoNeto(); 
-            lista += e.getNombre() + " | Sueldo: $" + e.getSueldo() + "\n";
+            float sueldoNeto = e.SueldoNeto(); 
+            lista += e.getNombre() + " | Sueldo final: $" + sueldoNeto + "\n";
         }
-        // Impresión simple
         JOptionPane.showMessageDialog(null, lista);
     }
 
