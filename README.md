@@ -2,6 +2,4 @@
 hola
 123456789987654321
 
-FALTA AGREGAR FUNCION Y METODOS STATIC
-
 return proyectoTerminado();
