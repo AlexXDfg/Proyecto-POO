@@ -23,9 +23,11 @@ public class Persistencia{
         } catch (IOException | ClassNotFoundException e) {
             System.out.println ("fin de lectura");
         }
-        finally{
+        finally {
             try {
-                fisPer.close();
+                if (fisPer != null) {
+                    fisPer.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
