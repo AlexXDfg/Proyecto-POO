@@ -29,10 +29,11 @@ public class Principal {
                 "1. Ver Información del Aeropuerto\n" +
                 "2. Ver Vuelos Disponibles\n" +
                 "3. Ver Nómina de Empleados\n" +
-                "4. Vender Boleto\n" +
-                "5. Verificar Estado (Vuelo/Asiento)\n" +
-                "6. ADMINISTRACIÓN (Agregar Vuelos/Empleados)\n"+
-                "7. Guardar y Salir\n" +
+                "4. Ver Empleados\n" +
+                "5. Vender Boleto\n" +
+                "6. Verificar Estado (Vuelo/Asiento)\n" +
+                "7. ADMINISTRACIÓN (Agregar Vuelos/Empleados)\n"+
+                "8. Guardar y Salir\n" +
                 "--------------------------------\n" +
                 "Seleccione una opción:"
             );
@@ -52,19 +53,23 @@ public class Principal {
                     mostrarNomina(aeropuerto);
                     break;
 
-                case 4: // Vender Boleto
+                case 4: // Ver Empleados
+                    mostrarEmpleados(aeropuerto);
+                    break;
+
+                case 5: // Vender Boleto
                     venderBoleto(aeropuerto);
                     break;
 
-                case 5: // Verificar Estado (Interface)
+                case 6: // Verificar Estado (Interface)
                     verificarEstado(aeropuerto);
                     break;
 
-                case 6:
+                case 7: // Administración
                     menuAdministracion(aeropuerto);
                     break;
                     
-                case 7: // Guardar y Salir
+                case 8: // Guardar y Salir
                     mensaje.detener();
                     Persistencia.guardaPersistencia(aeropuerto);
                     JOptionPane.showMessageDialog(null, "Guardando y saliendo...");
@@ -74,7 +79,7 @@ public class Principal {
                     JOptionPane.showMessageDialog(null, "Opción no válida.");
             }
 
-        } while(opcion != 7);
+        } while(opcion != 8);
     }
 
     public void menuAdministracion(Aeropuerto aeropuerto){
@@ -242,6 +247,18 @@ public class Principal {
             }
         }
         // Impresión simple, sin librerías raras
+        JOptionPane.showMessageDialog(null, lista);
+    }
+
+    public void mostrarEmpleados(Aeropuerto aeropuerto) {
+        String lista = "--- EMPLEADOS ---\n";
+        Empleado[] empleados = aeropuerto.getEmpleados();
+        
+        for (int i = 0; i < aeropuerto.getIndEmpleados(); i++) {
+            Empleado e = empleados[i];
+            lista += e.toString() + "\n";
+        }
+        // Impresión simple
         JOptionPane.showMessageDialog(null, lista);
     }
 
