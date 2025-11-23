@@ -5,6 +5,7 @@ public class Pasajero implements Serializable{
     private long idPasajero;
     private String documento;
     private String telefono;
+    private Boleto boleto;
 
     //Constructor
     public Pasajero(String nombre, long idPasajero, String documento, String telefono){
@@ -35,6 +36,12 @@ public class Pasajero implements Serializable{
     }
     public String getTelefono(){
         return telefono;
+    }
+    public Boleto getBoleto(){
+        return boleto;
+    }
+    public void setBoleto(Boleto boleto) {
+        this.boleto = boleto;
     }
 }
 

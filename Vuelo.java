@@ -102,6 +102,17 @@ public class Vuelo implements Verificable, Serializable{
             this.estado = 0; // Marcar vuelo como no disponible
         }
     }
+
+	public int contarPasajeros() {
+		int contador = 0;
+		for (int i = 0; i < asientos.length; i++) {
+			if (asientos[i].getDisponibilidad() == 0) { // Asiento ocupado
+				contador++;
+			}
+		}
+		return contador;
+	}
+
 }
 
 

@@ -5,6 +5,7 @@ public class Boleto implements Serializable{
     private long noBoleto;
     private Asiento asientoAsignado;
     private String clase;	// Primera clase o economica
+    private Pasajero pasajeroAsignado;
 
     //Constructor
     public Boleto(float precio, long noBoleto, Asiento asientoAsignado, String clase){
@@ -35,6 +36,9 @@ public class Boleto implements Serializable{
     }
     public String getClase(){
         return clase;
+    }
+    public Pasajero getPasajero(){
+        return pasajeroAsignado;
     }
 }
 

@@ -123,6 +123,9 @@ public class Aeropuerto implements Serializable{
         asiento.asignarBoleto(nuevoBoleto);
         agente.registrarVenta(nuevoBoleto);
         
+        // Asignar el boleto al pasajero
+        pasajero.setBoleto(nuevoBoleto);
+        
         // Verificar si el vuelo se llena después de la venta
         vuelo.verificarDisponibilidad();
         

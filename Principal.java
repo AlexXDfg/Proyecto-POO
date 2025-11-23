@@ -31,10 +31,12 @@ public class Principal {
                 "3. Ver Nómina de Empleados\n" +
                 "4. Ver Empleados\n" +
                 "5. Ver Aerolineas\n" +
-                "6. Vender Boleto\n" +
-                "7. Verificar Estado (Vuelo/Asiento)\n" +
-                "8. ADMINISTRACIÓN (Agregar Vuelos/Empleados/Aerolíneas)\n"+
-                "9. Guardar y Salir\n" +
+                "6. Ver Asientos\n" +
+                "7. Ver Pasajeros\n" +
+                "8. Vender Boleto\n" +
+                "9. Verificar Estado (Vuelo/Asiento)\n" +
+                "10. ADMINISTRACIÓN (Agregar Vuelos/Empleados/Aerolíneas)\n"+
+                "11. Guardar y Salir\n" +
                 "--------------------------------\n" +
                 "Seleccione una opción:"
             );
@@ -61,19 +63,27 @@ public class Principal {
                     mostrarAerolineas(aeropuerto);
                     break;
 
-                case 6: // Vender Boleto
+                case 6: // Ver Asientos
+                    mostrarAsientos(aeropuerto);;
+                    break;
+
+                case 7: // Ver Pasajeros
+                    mostrarPasajeros(aeropuerto);
+                    break;
+
+                case 8: // Vender Boleto
                     venderBoleto(aeropuerto);
                     break;
 
-                case 7: // Verificar Estado (Interface)
+                case 9: // Verificar Estado (Interface)
                     verificarEstado(aeropuerto);
                     break;
 
-                case 8: // Administración
+                case 10: // Administración
                     menuAdministracion(aeropuerto);
                     break;
                     
-                case 9: // Guardar y Salir
+                case 11: // Guardar y Salir
                     mensaje.detener();
                     Persistencia.guardaPersistencia(aeropuerto);
                     JOptionPane.showMessageDialog(null, "Guardando y saliendo...");
@@ -83,7 +93,7 @@ public class Principal {
                     JOptionPane.showMessageDialog(null, "Opción no válida.");
             }
 
-        } while(opcion != 9);
+        } while(opcion != 11);
     }
 
     public void menuAdministracion(Aeropuerto aeropuerto){
@@ -335,6 +345,31 @@ public class Principal {
         JOptionPane.showMessageDialog(null, lista);
     }
 
+    public void mostrarPasajeros(Aeropuerto aeropuerto) {
+        if (verificarVuelos(aeropuerto) == 0) return; // Verificar si hay vuelos disponibles
+        
+        Vuelo vueloSel = seleccionarVuelo(aeropuerto); // Pedir al usuario que seleccione un vuelo específico
+        if (vueloSel == null) return; // Si no se selecciona un vuelo válido, salir
+        
+        if (vueloSel.contarPasajeros() == 0) {
+            JOptionPane.showMessageDialog(null, "No hay pasajeros en este vuelo.");
+            return;
+        }
+
+        String lista = "--- PASAJEROS ---\n";
+        lista += "Vuelo #" + vueloSel.getNoVuelo() + ":\n";
+        
+        Asiento[] asientos = vueloSel.getAsientos();
+        for (int j = 0; j < asientos.length; j++) {
+            Asiento a = asientos[j];
+            if (a.getBoletoAsignado() != null) {
+                Pasajero p = a.getBoletoAsignado().getPasajero();
+                lista += "   " + p.toString() + "\n";
+            }
+        }
+        JOptionPane.showMessageDialog(null, lista);
+    }
+
     public int mostrarPilotos(Aeropuerto aeropuerto) {
         String lista = "--- PILOTOS ---\n";
         Empleado[] empleados = aeropuerto.getEmpleados();
@@ -368,6 +403,13 @@ public class Principal {
             }
         }
         JOptionPane.showMessageDialog(null, lista);
+    }
+
+    public void mostrarAsientos(Aeropuerto aeropuerto) {
+        Vuelo vuelo = seleccionarVuelo(aeropuerto);
+        if (vuelo != null) {
+            mostrarAsientos(vuelo);
+        }
     }
 
     public void mostrarNomina(Aeropuerto aeropuerto) {
