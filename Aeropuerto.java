@@ -102,7 +102,7 @@ public class Aeropuerto implements Serializable{
         return null;	//No se encontro el empleado
     }
 
-	public Boleto gestionarVentaBoleto(long idAgente, long noVuelo, long noAsiento, Pasajero pasajero, long noBoleto, float precio){
+	public Boleto gestionarVentaBoleto(long idAgente, long noVuelo, long noAsiento, Pasajero pasajero, long noBoleto){
         Empleado emp = buscarEmpleado(idAgente);
         if(!(emp instanceof AgenteMostrador))
             return null; //ERROR: ID de agente no válido
@@ -119,9 +119,20 @@ public class Aeropuerto implements Serializable{
         if (asiento.getDisponibilidad() == 0)
             return null;//ERROR: El asiento ya está ocupado
 
-        Boleto nuevoBoleto = new Boleto(precio, noBoleto, asiento, asiento.getTipo());
-        asiento.asignarBoleto(nuevoBoleto);
+		
+
+        Boleto nuevoBoleto = new Boleto(0, noBoleto, asiento, asiento.getTipo());
+		
+		if(asiento.getTipo().equals("Primera Clase"))
+			nuevoBoleto.setPrecio(5500.0f);
+        else
+			nuevoBoleto.setPrecio(2800.0f);
+		
+		nuevoBoleto.setPasajero(pasajero);
+		asiento.asignarBoleto(nuevoBoleto);
         agente.registrarVenta(nuevoBoleto);
+		
+		
         
         // Asignar el boleto al pasajero
         pasajero.setBoleto(nuevoBoleto);

@@ -40,5 +40,13 @@ public class Boleto implements Serializable{
     public Pasajero getPasajero(){
         return pasajeroAsignado;
     }
+	
+	//Setter
+	public void setPrecio(float precio){
+        this.precio = precio;
+    }
+	public void setPasajero(Pasajero pasajeroAsignado){
+        this.pasajeroAsignado = pasajeroAsignado;
+    }
 }
 

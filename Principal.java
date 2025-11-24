@@ -392,6 +392,20 @@ public class Principal {
         }
         return 1;
     }
+	
+	public void mostrarAgentes(Aeropuerto aeropuerto) {
+        String lista = "--- AGENTES ---\n";
+        Empleado[] empleados = aeropuerto.getEmpleados();
+        
+        for (int i = 0; i < aeropuerto.getIndEmpleados(); i++) {
+            if(empleados[i] instanceof AgenteMostrador){
+                AgenteMostrador agente = (AgenteMostrador) empleados[i];
+				lista += agente.toString() + "\n";
+            }
+        }
+		
+		JOptionPane.showMessageDialog(null, lista);
+    }
 
     public void mostrarAsientos(Vuelo vuelo) {
         String lista = "--- ASIENTOS DEL VUELO " + vuelo.getNoVuelo() + " ---\n";
@@ -440,7 +454,7 @@ public class Principal {
             Vuelo v = seleccionarVuelo(aeropuerto);
             if (v != null)
                 JOptionPane.showMessageDialog(null, "Estado: " + v.getEstadoDetallado());
-        } else if (seleccion == 2) { // Asiento
+        }else if (seleccion == 2) { // Asiento
             long idVuelo = Validacion.validaLong("ID del Vuelo:");
             Vuelo v = aeropuerto.buscarVuelo(idVuelo);
             if (v != null) {
@@ -468,11 +482,12 @@ public class Principal {
 
         Pasajero pasajero = crearPasajero();
         
-        long idAgente = Validacion.validaLong("ID del Agente (Ej. 1000):");
-        float precio = Validacion.validaFloat("Precio del boleto:");
+		mostrarAgentes(aeropuerto);
+        long idAgente = Validacion.validaLong("ID del Agente:");
         long noBoleto = System.currentTimeMillis();
+		
 
-        Boleto boleto = aeropuerto.gestionarVentaBoleto(idAgente, vueloSel.getNoVuelo(), asientoSel.getNoAsiento(), pasajero, noBoleto, precio); //
+        Boleto boleto = aeropuerto.gestionarVentaBoleto(idAgente, vueloSel.getNoVuelo(), asientoSel.getNoAsiento(), pasajero, noBoleto);
 
         if (boleto != null) {
             JOptionPane.showMessageDialog(null, "¡Venta Exitosa!\n" + boleto.toString());
@@ -482,41 +497,76 @@ public class Principal {
     }
 
     // --- CARGA DE DATOS INICIALES ---
-    public Aeropuerto datosInicializados() {
+    public Aeropuerto datosInicializados(){
         Aeropuerto aeropuerto = new Aeropuerto("Benito Juárez", "CDMX");
 
-        // Aerolíneas
-        aeropuerto.addAerolinea("AeroMexico"); 
-        aeropuerto.addAerolinea("Volaris");     
+        //Crear Aerolíneas
+        aeropuerto.addAerolinea("AeroMexico");
+        aeropuerto.addAerolinea("Volaris");
 
-        // 3 Agentes de Mostrador
-        for (int i = 0; i < 3; i++) {
-            AgenteMostrador agente = new AgenteMostrador(1000L + i, "Agente " + (i + 1), 2, 35000.0f);
-            aeropuerto.addEmpleado(agente); 
+        //Crear Agentes de Mostrador
+        AgenteMostrador a1 = new AgenteMostrador(1000L, "Roberto Gómez", 5, 38000.0f);
+        AgenteMostrador a2 = new AgenteMostrador(1001L, "Laura Fernández", 2, 35000.0f);
+        AgenteMostrador a3 = new AgenteMostrador(1002L, "Miguel Ángel Ruiz", 8, 42000.0f);
+        aeropuerto.addEmpleado(a1);
+        aeropuerto.addEmpleado(a2);
+        aeropuerto.addEmpleado(a3);
+
+        // ---------------------------------------------------------
+        // VUELO 1: Vuelo #100 (CDMX -> CUN) - Casi lleno
+        // ---------------------------------------------------------
+        Vuelo v1 = new Vuelo(100L, "CDMX", "CUN", "07:00", "09:15", "2h 15m");
+        
+        // Tripulación Vuelo 100
+        Piloto p1 = new Piloto(8500, 1, v1, 2000L, "Cap. Armando Torres", 15, 125000f);
+        Piloto.Copiloto c1 = p1.new Copiloto(2001L, "Oficial Sandra López", 4, 75000f, 1);
+        Azafata az1 = new Azafata(120, v1, 3000L, "Elena M.", 6, 48000f);
+
+        p1.setCopiloto(c1);
+        
+        aeropuerto.addEmpleado(p1);
+        aeropuerto.addEmpleado(c1);
+        aeropuerto.addEmpleado(az1);
+        aeropuerto.addVuelo(v1, 0); // AeroMexico
+
+        // Listas de datos para simular una carga real
+        String[] nombres = {
+            "Juan Silva", "María González", "Pedro Hernández", "Lucía Martínez", "Jorge López",
+            "Carmen Sánchez", "Raúl Ramírez", "Sofía Torres", "Miguel Flores", "Elena Rivera",
+            "Javier Gómez", "Isabel Díaz", "Fernando Reyes", "Teresa Morales", "Ricardo Ortega",
+            "Patricia Ruiz", "Daniel Castro", "Gabriela Vargas", "Alejandro Medina"
+        };
+        
+        for (int i = 0; i < nombres.length; i++) {
+            String nombre = nombres[i];
+            long idPasajero = 10000L + i; 
+            String doc = "INE" + (45000 + i);
+            String tel = "55-1234-00" + (10 + i);
+            
+            Pasajero p = new Pasajero(nombre, idPasajero, doc, tel);
+            
+            aeropuerto.gestionarVentaBoleto(1000L, 100L, (long)(i + 1), p, 90000L + i);
         }
 
-        // 1 Vuelo de prueba
-        Vuelo v = new Vuelo(100L, "CDMX", "CUN", "08:00", "10:00", "2h");
+        // ---------------------------------------------------------
+        // VUELO 2: Vuelo #200 (MTY -> GDL) - Semi vacío
+        // ---------------------------------------------------------
+        Vuelo v2 = new Vuelo(200L, "MTY", "GDL", "14:00", "15:30", "1h 30m");
+
+        // Tripulación Vuelo 200
+        Piloto p2 = new Piloto(6200, 1, v2, 4000L, "Cap. Luis Méndez", 12, 118000f);
+        Azafata az2 = new Azafata(45, v2, 4002L, "Mariana K.", 2, 40000f);
         
-        // Personal del vuelo
-        Piloto p = new Piloto(5000, 1, v, 2000L, "Capitán Juan", 10, 120000f);
-        Piloto.Copiloto c = p.new Copiloto(2001L, "Copiloto Luis", 5, 80000f, 1);
-        Azafata az = new Azafata(0, v, 3000L, "Azafata Ana", 3, 45000f);
+        aeropuerto.addEmpleado(p2);
+        aeropuerto.addEmpleado(az2);
+        aeropuerto.addVuelo(v2, 1); // Volaris
 
-        p.setCopiloto(c);
-        p.setVueloAsignado(v);
-        az.setVueloAsignado(v);
+        Pasajero pExtra1 = new Pasajero("Diana Prince", 9901L, "PASS-US-01", "555-9988");
+        Pasajero pExtra2 = new Pasajero("Clark Kent", 9902L, "PASS-US-02", "555-7766");
 
-        aeropuerto.addVuelo(v, 0); 
-        aeropuerto.addEmpleado(p);
-        aeropuerto.addEmpleado(c);
-        aeropuerto.addEmpleado(az);
+        aeropuerto.gestionarVentaBoleto(1001L, 200L, 1L, pExtra1, 99991L); // Primera Clase
+        aeropuerto.gestionarVentaBoleto(1001L, 200L, 6L, pExtra2, 99992L); // Turista
 
         return aeropuerto;
     }
 }
-
-
-
-
-
